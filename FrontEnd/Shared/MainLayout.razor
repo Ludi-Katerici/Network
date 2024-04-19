@@ -1,17 +1,26 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
+<Header ToggleDropdown="ToggleDropdown"></Header>
+
+<main class="w-full h-full flex flex-1 relative">
+    <SideBar></SideBar>
+    <div class="flex h-full w-full">
+        <ErrorBoundary>
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <ErrorContent Context="ex">
+                An error occurred: @ex.Message
+            </ErrorContent>
+        </ErrorBoundary>
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+    <DropdownList DropdownVisibilityClass="@DropdownVisibilityClass"></DropdownList>
+</main>
+<Footer></Footer>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+@code {
+    string DropdownVisibilityClass { get; set; } = "hidden";
+
+    void ToggleDropdown() => DropdownVisibilityClass = DropdownVisibilityClass == "hidden" ? "block" : "hidden";
+}

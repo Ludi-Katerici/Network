@@ -1,4 +1,4 @@
-﻿namespace Server.API.SDK.Endpoints.IsEmailAvailable;
+﻿namespace Contracts.Endpoints.IsEmailAvailable;
 
 public sealed record IsEmailAvailableRequest
 {

@@ -1,6 +1,6 @@
-﻿using FastEndpoints;
+﻿using Contracts.Endpoints.RegisterUser;
+using FastEndpoints;
 using FluentValidation;
-using Server.API.SDK.Endpoints.RegisterUser;
 
 namespace Server.API.Endpoints.RegisterUser;
 

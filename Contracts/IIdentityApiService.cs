@@ -1,10 +1,10 @@
-﻿using Refit;
-using Server.API.SDK.Endpoints.DeleteUser;
-using Server.API.SDK.Endpoints.IsEmailAvailable;
-using Server.API.SDK.Endpoints.LoginUser;
-using Server.API.SDK.Endpoints.RegisterUser;
+﻿using Contracts.Endpoints.DeleteUser;
+using Contracts.Endpoints.IsEmailAvailable;
+using Contracts.Endpoints.LoginUser;
+using Contracts.Endpoints.RegisterUser;
+using Refit;
 
-namespace Server.API.SDK;
+namespace Contracts;
 
 public interface IIdentityApiService
 {

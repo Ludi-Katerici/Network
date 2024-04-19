@@ -1,6 +1,6 @@
-﻿using FastEndpoints;
+﻿using Contracts.Endpoints.IsEmailAvailable;
+using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Server.API.SDK.Endpoints.IsEmailAvailable;
 using Server.Persistence;
 
 namespace Server.API.Endpoints.IsEmailAvailable;

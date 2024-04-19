@@ -1,6 +1,6 @@
-﻿using FastEndpoints;
+﻿using Contracts.Endpoints.DeleteUser;
+using FastEndpoints;
 using FluentValidation;
-using Server.API.SDK.Endpoints.DeleteUser;
 
 namespace Server.API.Endpoints.DeleteUser;
 

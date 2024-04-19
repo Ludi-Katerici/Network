@@ -1,4 +1,4 @@
-﻿namespace Server.API.SDK.Endpoints.LoginUser;
+﻿namespace Contracts.Endpoints.LoginUser;
 
 public sealed record LoginUserResponse
 {

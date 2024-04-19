@@ -1,4 +1,4 @@
-﻿namespace Server.API.SDK.Events;
+﻿namespace Contracts.Events;
 
 internal sealed class UserCreated
 {

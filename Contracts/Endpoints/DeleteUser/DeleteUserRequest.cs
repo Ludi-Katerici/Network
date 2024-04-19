@@ -1,4 +1,4 @@
-﻿namespace Server.API.SDK.Endpoints.DeleteUser;
+﻿namespace Contracts.Endpoints.DeleteUser;
 
 public sealed record DeleteUserRequest 
 {

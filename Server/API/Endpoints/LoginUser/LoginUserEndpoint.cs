@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
+using Contracts.Endpoints.LoginUser;
 using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Server.API.SDK.Endpoints.LoginUser;
 using Server.Common.API.Authorization.Claims;
 using Server.Core.Services;
 using Server.Persistence;

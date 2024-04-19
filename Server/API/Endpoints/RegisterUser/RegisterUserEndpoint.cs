@@ -1,6 +1,6 @@
-﻿using FastEndpoints;
+﻿using Contracts.Endpoints.RegisterUser;
+using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Server.API.SDK.Endpoints.RegisterUser;
 using Server.Common.Core.Exceptions.Email;
 using Server.Core.Factories;
 using Server.Core.Models;

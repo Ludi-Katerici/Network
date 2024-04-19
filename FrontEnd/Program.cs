@@ -1,3 +1,4 @@
+using Contracts;
 using Blazored.LocalStorage;
 using Blazored.Modal;
 using FluentValidation;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using FrontEnd;
 using FrontEnd.Infrastructure;
 using FrontEnd.Infrastructure.Authentication;
+using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,8 +22,8 @@ builder.Services.AddBlazoredModal();
 
 builder.Services.AddScoped<CookieHandler>();
 
-/*builder.Services.AddRefitClient<IIdentityApiService>()
-    .ConfigureHttpClient(x => x.BaseAddress = new Uri("https://localhost:7066/api"))
-    .AddHttpMessageHandler<CookieHandler>();*/
+builder.Services.AddRefitClient<IIdentityApiService>()
+    .ConfigureHttpClient(x => x.BaseAddress = new Uri("https://localhost:7050/api"))
+    .AddHttpMessageHandler<CookieHandler>();
 
 await builder.Build().RunAsync();

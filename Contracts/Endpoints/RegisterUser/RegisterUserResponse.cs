@@ -1,4 +1,4 @@
-﻿namespace Server.API.SDK.Endpoints.RegisterUser;
+﻿namespace Contracts.Endpoints.RegisterUser;
 
 public sealed record RegisterUserResponse
 {

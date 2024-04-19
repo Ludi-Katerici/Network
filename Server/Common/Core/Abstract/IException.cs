@@ -2,5 +2,5 @@
 
 public interface IException
 {
-    string Discriminator { get; }
+    string ErrorMessage { get; }
 }

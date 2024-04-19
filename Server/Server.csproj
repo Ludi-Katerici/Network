@@ -26,6 +26,8 @@
       <Folder Include="API\EventHandlers\" />
       <Folder Include="Common\API.SDK\" />
       <Folder Include="Common\API\" />
+      <Folder Include="Core\Services\" />
+      <Folder Include="Infrastructure\Services\" />
     </ItemGroup>
 
     <ItemGroup>

@@ -15,7 +15,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddLogging();
 builder.Services.AddScoped<MemoryStorageUtility>();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddBlazoredModal();

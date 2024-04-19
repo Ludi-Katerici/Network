@@ -4,8 +4,6 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Server.Common.API.Authorization.Claims;
-using Server.Core.Services;
 using Server.Persistence;
 using IdentityUser=Server.Core.Models.IdentityUser;
 
@@ -14,7 +12,7 @@ namespace Server.API.Endpoints.LoginUser;
 internal sealed class LoginUserEndpoint : Endpoint<LoginUserRequest, LoginUserResponse>
 {
     public DataContext DataContext { get; set; }
-    public IPasswordService PasswordService { get; set; }
+    public PasswordHasher<IdentityUser> PasswordHasher { get; set; }
 
     public override void Configure()
     {
@@ -32,7 +30,7 @@ internal sealed class LoginUserEndpoint : Endpoint<LoginUserRequest, LoginUserRe
             return;
         }
 
-        var result = this.PasswordService.VerifyHashedPassword(user, user.PasswordHash, req.Password);
+        var result = this.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, req.Password);
 
         if (result == PasswordVerificationResult.Failed)
         {

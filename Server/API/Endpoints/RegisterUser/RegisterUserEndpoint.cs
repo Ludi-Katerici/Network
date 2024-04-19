@@ -1,20 +1,15 @@
 ﻿using Contracts.Endpoints.RegisterUser;
 using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
-using Server.Common.Core.Exceptions.Email;
-using Server.Core.Factories;
-using Server.Core.Models;
-using Server.Core.Services;
+using Microsoft.AspNetCore.Identity;
 using Server.Persistence;
+using IdentityUser=Server.Core.Models.IdentityUser;
 
 namespace Server.API.Endpoints.RegisterUser;
 
 internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
 {
     public DataContext DataContext { get; set; }
-    public IIdentityUserFactory IdentityUserFactory { get; set; }
-    public IPasswordService PasswordService { get; set; }
-
+    public IPasswordHasher<IdentityUser> PasswordHasher { get; set; }
     public override void Configure()
     {
         this.Post(RegisterUserRequest.Route);
@@ -23,8 +18,6 @@ internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
 
     public override async Task HandleAsync(RegisterUserRequest req, CancellationToken ct)
     {
-        this.ValidatePassword(req.Password);
-        await this.ValidateEmail(req.Email);
         this.ThrowIfAnyErrors();
 
         var user = await this.CreateUser(req, ct);
@@ -38,36 +31,24 @@ internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
     }
     private async Task<IdentityUser> CreateUser(RegisterUserRequest req, CancellationToken ct)
     {
-        var factory = this.IdentityUserFactory
-            .WithEmail(req.Email)
-            .WithPassword(req.Password);
-
-        var user = factory.Build();
+        var user = new IdentityUser(
+            name: req.Name,
+            family: req.Family,
+            email: req.Email,
+            phoneNumber: req.PhoneNumber,
+            city: req.City,
+            region: req.Region,
+            professionalExperience: req.ProfessionalExperience,
+            interests: req.Interests,
+            searchings: req.Searchings,
+            additionalInformation: req.AdditionalInformation);
+        
+        var passwordHash = this.PasswordHasher.HashPassword(user, req.Password);
+        user.PasswordHash = passwordHash;
 
         await this.DataContext.AddAsync(user, ct);
         await this.DataContext.SaveChangesAsync(ct);
 
         return user;
-    }
-
-    private void ValidatePassword(string password)
-    {
-        var errors = this.PasswordService.ValidatePassword(password);
-
-        foreach (var error in errors)
-        {
-            this.AddError(x => x.Password, error.Discriminator);
-        }
-    }
-
-    private async Task ValidateEmail(string email)
-    {
-        var emailToUpperCase = email.ToUpper();
-        var isEmailTaken = await this.DataContext.Users.AsNoTracking().AnyAsync(x => x.Email == emailToUpperCase);
-        
-        if (isEmailTaken)
-        {
-            this.AddError(x => x.Email, EmailMustBeUnique.Instance.Discriminator);
-        }
     }
 }

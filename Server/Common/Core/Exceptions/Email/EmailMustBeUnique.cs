@@ -4,7 +4,6 @@ namespace Server.Common.Core.Exceptions.Email;
 
 public sealed class EmailMustBeUnique : IException
 {
-    public string Discriminator => nameof(EmailMustBeUnique);
-    
     public static EmailMustBeUnique Instance { get; } = new();
+    public string ErrorMessage => "Този имейл вече съществува.";
 }

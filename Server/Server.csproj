@@ -24,6 +24,8 @@
     <ItemGroup>
       <Folder Include="Common\API.SDK\" />
       <Folder Include="Common\API\" />
+      <Folder Include="Modules\Identity\API\Endpoints\" />
+      <Folder Include="Modules\Identity\API\EventHandlers\" />
     </ItemGroup>
     
     

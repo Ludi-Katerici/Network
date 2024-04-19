@@ -4,9 +4,9 @@ using Server.Modules.Identity.Infrastructure;
 using Server.Modules.Identity.Infrastructure.Factories;
 using Server.Modules.Identity.Infrastructure.Services;
 
-namespace Server.Modules.Identity.API;
+namespace Server.API;
 
-public static class ModuleExtensions
+public static class ApiExtensions
 {
     public static IServiceCollection AddIdentityModule(this IServiceCollection services)
     {

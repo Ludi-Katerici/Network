@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <NoWarn>$(NoWarn);CS8618</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,10 +23,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="API.SDK\" />
+      <Folder Include="API\EventHandlers\" />
       <Folder Include="Common\API.SDK\" />
       <Folder Include="Common\API\" />
-      <Folder Include="Modules\Identity\API\Endpoints\" />
-      <Folder Include="Modules\Identity\API\EventHandlers\" />
+      <Folder Include="Core\" />
+      <Folder Include="Infrastructure\" />
     </ItemGroup>
     
     

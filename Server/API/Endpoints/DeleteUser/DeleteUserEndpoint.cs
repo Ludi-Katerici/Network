@@ -1,11 +1,13 @@
 ﻿using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 using Server.Modules.Identity.API.SDK.Endpoints.DeleteUser;
+using Server.Persistence;
 
-namespace Server.Modules.Identity.API.Endpoints.DeleteUser;
+namespace Server.API.Endpoints.DeleteUser;
 
 internal sealed class DeleteUserEndpoint : Endpoint<DeleteUserRequest>
 {
-    public IdentityContext DataContext { get; set; }
+    public DataContext DataContext { get; set; }
     
     public override void Configure()
     {

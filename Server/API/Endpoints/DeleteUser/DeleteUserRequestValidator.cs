@@ -1,8 +1,8 @@
 ﻿using FastEndpoints;
 using FluentValidation;
-using Identity.API.SDK.Endpoints.DeleteUser;
+using Server.Modules.Identity.API.SDK.Endpoints.DeleteUser;
 
-namespace Identity.API.Endpoints.DeleteUser;
+namespace Server.API.Endpoints.DeleteUser;
 
 internal sealed class DeleteUserRequestValidator : Validator<DeleteUserRequest>
 {

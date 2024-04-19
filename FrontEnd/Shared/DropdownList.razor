@@ -1,0 +1,9 @@
+﻿<div class="@DropdownVisibilityClass bg-[#f2f2f2] absolute top-0 right-0 mr-3 mt-2 border-lightgray border-[3px] rounded text-[#5c5c5b] font-medium py-2 px-3">
+    <a class="flex w-full hover:underline" href="#">Change Password</a>
+    <a class="flex w-full hover:underline" href="#">Login</a>
+</div>
+
+@code {
+    [EditorRequired, Parameter]
+    public string DropdownVisibilityClass { get; set; } = "hidden";
+}

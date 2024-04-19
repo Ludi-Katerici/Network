@@ -99,9 +99,9 @@ module.exports = {
             },
             white: '#ffffff',
             black: '#000000',
-            'blacklist-blue': '#2C81F5FF',
-            'blacklist-dark-gray': '#5c5c5b',
-            'blacklist-gray': '#f2f2f2',
+            'primary': '#15708B',
+            'secondary': '#54595F',
+            't-color': '#7A7A7A',
             
         },
     },

@@ -1,0 +1,12 @@
+﻿<header class="flex justify-between bg-blacklist-gray py-3 px-8 border-b-2 border-b-solid border-b-[#d2d2d2] relative">
+    <img class="h-12 my-auto" src="images/main-logo.png" alt="Main Logo"/>
+
+    <HeaderNavigation ToggleDropdown="ToggleDropdown"></HeaderNavigation>
+</header>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public EventCallback ToggleDropdown { get; set; }
+
+}

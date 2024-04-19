@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Server.Core.Models;
 
-namespace Server.Infrastructure.Configurations;
+namespace Server.Persistence.Configurations;
 
 public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<IdentityUser>
 {

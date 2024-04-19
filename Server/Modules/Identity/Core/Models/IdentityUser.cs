@@ -7,11 +7,9 @@ public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformati
 {
     private HashSet<LoginInfo> logins = [];
     public IdentityUser(
-        string email,
-        DateOnly? scheduledActivationDateDate = null) : base(Guid.NewGuid())
+        string email) : base(Guid.NewGuid())
     {
         this.Email = email;
-        this.ScheduledActivationDate = scheduledActivationDateDate;
         this.AuthorizationDetails = new AuthorizationDetails();
     }
 
@@ -20,7 +18,6 @@ public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformati
 
     public AuthorizationDetails AuthorizationDetails { get; private set; }
 
-    public DateOnly? ScheduledActivationDate { get; private set; }
     public IReadOnlyCollection<LoginInfo> Logins => this.logins.ToList().AsReadOnly();
 
     #region Methods

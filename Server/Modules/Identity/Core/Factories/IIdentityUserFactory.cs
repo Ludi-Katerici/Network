@@ -8,8 +8,4 @@ public interface IIdentityUserFactory : IFactory<IdentityUser>
     IIdentityUserFactory WithEmail(string email);
     
     IIdentityUserFactory WithPassword(string password);
-    
-    IIdentityUserFactory WithScheduledDate(DateOnly scheduledActivationDate);
-
-    IIdentityUserFactory WithoutScheduledDate();
 }

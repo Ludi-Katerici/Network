@@ -12,7 +12,6 @@ public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<Identit
         
         builder.Property(x => x.Email).IsRequired();
         builder.Property(x => x.PasswordHash).IsRequired();
-        builder.Property(x => x.ScheduledActivationDate).IsRequired(false);
         
         builder.OwnsMany(x => x.Logins, navigationBuilder =>
         {

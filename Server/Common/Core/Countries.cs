@@ -1,0 +1,2 @@
+﻿namespace Server.Common.Core;
+

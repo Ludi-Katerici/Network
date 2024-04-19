@@ -3,11 +3,11 @@ using FastEndpoints;
 using FastEndpoints.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Server.API.SDK.Endpoints.LoginUser;
 using Server.Common.API.Authorization.Claims;
-using Server.Modules.Identity.API.SDK.Endpoints.LoginUser;
-using Server.Modules.Identity.Core.Services;
+using Server.Core.Services;
 using Server.Persistence;
-using IdentityUser=Server.Modules.Identity.Core.Models.IdentityUser;
+using IdentityUser=Server.Core.Models.IdentityUser;
 
 namespace Server.API.Endpoints.LoginUser;
 

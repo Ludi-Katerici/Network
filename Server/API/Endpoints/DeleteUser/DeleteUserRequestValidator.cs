@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using FluentValidation;
-using Server.Modules.Identity.API.SDK.Endpoints.DeleteUser;
+using Server.API.SDK.Endpoints.DeleteUser;
 
 namespace Server.API.Endpoints.DeleteUser;
 

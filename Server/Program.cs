@@ -1,7 +1,9 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Server.API;
 using Server.Common.Infrastructure;
+using Server.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,8 @@ builder.Services.ConfigurePOCO<DatabaseOptions>(builder.Configuration);
 builder.Services
     .AddLogging()
     .AddCommonModule()
+    .AddInfrastructureLayer()
+    .AddApiModule()
     .AddCors(x => x.AddDefaultPolicy(y => y.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()))
     .AddDateOnlyTimeOnlyStringConverters()
     .AddOutputCache()

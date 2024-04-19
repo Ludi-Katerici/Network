@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Server.Modules.Identity.API.SDK.Endpoints.DeleteUser;
+using Server.API.SDK.Endpoints.DeleteUser;
 using Server.Persistence;
 
 namespace Server.API.Endpoints.DeleteUser;

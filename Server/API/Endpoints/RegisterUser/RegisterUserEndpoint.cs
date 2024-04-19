@@ -1,10 +1,10 @@
 ﻿using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
+using Server.API.SDK.Endpoints.RegisterUser;
 using Server.Common.Core.Exceptions.Email;
-using Server.Modules.Identity.API.SDK.Endpoints.RegisterUser;
-using Server.Modules.Identity.Core.Factories;
-using Server.Modules.Identity.Core.Models;
-using Server.Modules.Identity.Core.Services;
+using Server.Core.Factories;
+using Server.Core.Models;
+using Server.Core.Services;
 using Server.Persistence;
 
 namespace Server.API.Endpoints.RegisterUser;

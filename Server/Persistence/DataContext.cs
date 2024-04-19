@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Common.Infrastructure;
-using Server.Modules.Identity.Core.Models;
+using Server.Core.Models;
 
 namespace Server.Persistence;
 

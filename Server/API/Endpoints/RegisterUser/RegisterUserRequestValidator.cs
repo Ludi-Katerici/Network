@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using FluentValidation;
-using Server.Modules.Identity.API.SDK.Endpoints.RegisterUser;
+using Server.API.SDK.Endpoints.RegisterUser;
 
 namespace Server.API.Endpoints.RegisterUser;
 

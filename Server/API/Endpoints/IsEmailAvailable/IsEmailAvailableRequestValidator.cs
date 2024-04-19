@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using FluentValidation;
-using Server.Modules.Identity.API.SDK.Endpoints.IsEmailAvailable;
+using Server.API.SDK.Endpoints.IsEmailAvailable;
 
 namespace Server.API.Endpoints.IsEmailAvailable;
 

@@ -20,4 +20,6 @@ public class DataContext : BaseDbContext
     }
 
     public DbSet<IdentityUser> Users { get; set; } = default!;
+    
+    public DbSet<Event> Events { get; set; } = default!;
 }

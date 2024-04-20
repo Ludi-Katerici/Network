@@ -19,6 +19,14 @@ public class RegisterUserRequestValidator : Validator<RegisterUserRequest>
             .NotEmpty()
             .WithMessage("Моля въведете име.");
         
+        this.RuleFor(x => x.Education)
+            .NotEmpty()
+            .WithMessage("Моля въведете образование.");
+        
+        this.RuleFor(x => x.Work)
+            .NotEmpty()
+            .WithMessage("Моля въведете работа.");
+        
         this.RuleFor(x => x.Family)
             .NotEmpty()
             .WithMessage("Моля въведете фамилия.");

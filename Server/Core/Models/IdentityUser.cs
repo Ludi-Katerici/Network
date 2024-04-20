@@ -3,7 +3,7 @@ using Server.Common.Core.Abstract;
 
 namespace Server.Core.Models;
 
-public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformation
+public sealed class IdentityUser : Entity<Guid>, IAuditInformation
 {
     private HashSet<LoginInfo> logins = [];
     public IdentityUser(
@@ -13,6 +13,8 @@ public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformati
         string phoneNumber,
         string region,
         string city,
+        string education,
+        string work,
         string professionalExperience,
         string interests,
         string searchings,
@@ -21,6 +23,8 @@ public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformati
         this.Name = name;
         this.Family = family;
         this.Email = email.ToUpper();
+        this.Education = education;
+        this.Work = work;
         this.PhoneNumber = phoneNumber;
         this.AuthorizationDetails = new AuthorizationDetails();
         this.Region = region;
@@ -40,6 +44,9 @@ public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformati
 
     public string Region { get; set; }
     public string City { get; set; }
+    
+    public string Education { get; set; }
+    public string Work { get; set; }
 
     public string ProfessionalExperience { get; set; }
 
@@ -50,6 +57,10 @@ public sealed class IdentityUser : Entity<Guid>, IAggregateRoot, IAuditInformati
     public string AdditionalInformation { get; set; }
 
     public AuthorizationDetails AuthorizationDetails { get; private set; }
+    
+    public List<EventIdentityUser> EventsAttended { get; set; } = new(); 
+    
+    public List<Event> EventsCreated { get; set; } = new();
 
     public IReadOnlyCollection<LoginInfo> Logins => this.logins.ToList().AsReadOnly();
 

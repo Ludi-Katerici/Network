@@ -34,6 +34,8 @@ internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
             family: req.Family,
             email: req.Email,
             phoneNumber: req.PhoneNumber,
+            education: req.Education,
+            work: req.Work,
             city: req.City,
             region: req.Region,
             professionalExperience: req.ProfessionalExperience,

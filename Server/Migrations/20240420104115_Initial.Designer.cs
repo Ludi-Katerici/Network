@@ -12,7 +12,7 @@ using Server.Persistence;
 namespace Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240420034518_Initial")]
+    [Migration("20240420104115_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,6 +25,80 @@ namespace Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Server.Core.Models.Event", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Categories")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .IsRequired()
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("StartDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Events", "identity");
+                });
+
+            modelBuilder.Entity("Server.Core.Models.EventIdentityUser", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdentityUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("ModifiedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("EventId", "IdentityUserId");
+
+                    b.HasIndex("IdentityUserId");
+
+                    b.ToTable("EventIdentityUser", "identity");
+                });
 
             modelBuilder.Entity("Server.Core.Models.IdentityUser", b =>
                 {
@@ -42,6 +116,10 @@ namespace Server.Migrations
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Education")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -82,9 +160,43 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Work")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users", "identity");
+                });
+
+            modelBuilder.Entity("Server.Core.Models.Event", b =>
+                {
+                    b.HasOne("Server.Core.Models.IdentityUser", "Creator")
+                        .WithMany("EventsCreated")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("Server.Core.Models.EventIdentityUser", b =>
+                {
+                    b.HasOne("Server.Core.Models.Event", "Event")
+                        .WithMany("Attendees")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Server.Core.Models.IdentityUser", "IdentityUser")
+                        .WithMany("EventsAttended")
+                        .HasForeignKey("IdentityUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("IdentityUser");
                 });
 
             modelBuilder.Entity("Server.Core.Models.IdentityUser", b =>
@@ -267,6 +379,18 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Logins");
+                });
+
+            modelBuilder.Entity("Server.Core.Models.Event", b =>
+                {
+                    b.Navigation("Attendees");
+                });
+
+            modelBuilder.Entity("Server.Core.Models.IdentityUser", b =>
+                {
+                    b.Navigation("EventsAttended");
+
+                    b.Navigation("EventsCreated");
                 });
 #pragma warning restore 612, 618
         }

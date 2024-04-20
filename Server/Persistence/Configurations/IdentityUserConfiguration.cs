@@ -21,6 +21,13 @@ public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<Identit
         builder.Property(x => x.Interests).IsRequired();
         builder.Property(x => x.Searchings).IsRequired();
         builder.Property(x => x.AdditionalInformation).IsRequired();
+        builder.Property(x => x.Work).IsRequired();
+        builder.Property(x => x.Education).IsRequired();
+
+        builder.HasMany(x => x.EventsCreated)
+            .WithOne(x => x.Creator)
+            .HasForeignKey(x => x.CreatorId);
+        
         
         builder.OwnsMany(x => x.Logins, navigationBuilder =>
         {

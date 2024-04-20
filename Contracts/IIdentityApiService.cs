@@ -1,4 +1,5 @@
 ﻿using Contracts.Endpoints.DeleteUser;
+using Contracts.Endpoints.GetAllFriendRequests;
 using Contracts.Endpoints.IsEmailAvailable;
 using Contracts.Endpoints.LoginUser;
 using Contracts.Endpoints.RegisterUser;

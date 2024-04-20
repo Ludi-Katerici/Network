@@ -2,6 +2,7 @@
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
+@inject IFriendsApiService FriendsApiService
 
 @page "/details/{id:guid}"
 @using Contracts
@@ -117,7 +118,7 @@
 
     async Task OnAddFriendClick(Guid receiverId)
     {
-        var response = await EventsApiService.SendFriendRequestTo(
+        var response = await FriendsApiService.SendFriendRequestTo(
             new SendFriendRequest
             {
                 ReceiverId = receiverId,

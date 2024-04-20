@@ -1,0 +1,60 @@
+﻿@page "/received-friend-requests"
+@using Contracts.Endpoints.GetAllFriendRequests
+@using FrontEnd.Infrastructure.Authentication
+@using FrontEnd.Infrastructure.UtilityMethods
+@using Contracts
+@inject IFriendsApiService FriendsApiService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject IAuthService AuthService
+
+<div class="flex w-full h-full flex-col gap-4 my-auto mx-auto items-center justify-center">
+    @if (this.FriendRequests.Count == 0)
+    {
+        <div class="text-black mx-auto flex items-center justify-center text-4xl font-semibold">
+            Нямате изпратени неприети покани.
+        </div>
+    }
+    else
+    {
+        <div class="text-black mx-auto flex items-center justify-center text-4xl font-semibold">
+            Получени, очакващи отговор
+        </div>
+
+        <div class="flex flex-col justify-center h-fit items-center mx-auto bg-secondary p-8 gap-4 rounded-3xl">
+            
+            @foreach (var friendRequest in this.FriendRequests)
+            {
+                <div class="bg-primary flex gap-4 text-white font-semibold px-4 rounded-2xl py-4 items-center justify-center">
+                    <span>От: @friendRequest.SenderFullName</span>
+                    <span>Получена на: @(friendRequest.CreatedAt.ToString("g"))</span>
+                    <div class="flex">
+                        <button class="bg-green-500 rounded-md px-2 py-1">Приеми</button>
+                    </div>
+                </div>
+            }
+            
+        </div>
+    }
+    
+    
+</div>
+
+@code {
+    List<GetAllFriendsRequestsResponse.FriendRequestResponseModel> FriendRequests = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = (await this.AuthService.GetAuthStateDetails())!.UserId;
+        var response = await this.FriendsApiService.GetAllFriendsRequests();
+        if (response.IsSuccessStatusCode)
+        {
+            this.FriendRequests = response.Content.FriendRequests.Where(x => x.AcceptedAt.HasValue is false && x.ReceiverId == Guid.Parse(userId)).ToList();
+        }
+        else
+        {
+            await this.JsRuntime.ToastError("Неуспешно зареждане на приятелства.");
+            this.NavigationManager.NavigateTo("/friend-requests");
+        }
+    }
+}

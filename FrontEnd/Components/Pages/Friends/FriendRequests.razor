@@ -1,6 +1,8 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IFriendsApiService FriendsApiService
 
-@page "/FriendRequests"
+@page "/friend-requests"
+@using Contracts
 
 <div class="flex items-center gap-8 justify-center mx-auto">
     <button class="bg-primary p-10 rounded-3xl text-center text-white font-semibold text-2xl" @onclick='() => NavigationManager.NavigateTo("/sent-friend-requests")'>
@@ -18,5 +20,4 @@
 
 
 @code {
-
 }

@@ -20,7 +20,4 @@ public interface IEventsApiService
     
     [Post(SignUpForEventRequest.Route)]
     Task<IApiResponse> SignUpForEvent([Body] SignUpForEventRequest request);
-    
-    [Post(SendFriendRequest.Route)]
-    Task<IApiResponse> SendFriendRequestTo([Body] SendFriendRequest request);
 }

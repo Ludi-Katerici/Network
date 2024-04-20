@@ -8,6 +8,9 @@ internal sealed class FriendRelationshipConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<FriendRelationship> builder)
     {
+        builder.Property(x => x.AcceptedAt)
+            .IsRequired(false);
+        
         builder.HasKey(x => new {x.ReceiverId, x.SenderId});
         
         builder.HasOne(x => x.Sender)

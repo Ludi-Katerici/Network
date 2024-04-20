@@ -10,7 +10,7 @@ public sealed class FriendRelationship : IAuditInformation
     public Guid ReceiverId { get; set; }
     public IdentityUser Receiver { get; set; }
     
-    public bool IsAccepted { get; set; }
+    public DateTime? AcceptedAt { get; set; }
     
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset? ModifiedOn { get; set; }

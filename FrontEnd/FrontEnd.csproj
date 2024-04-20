@@ -29,4 +29,14 @@
       <ProjectReference Include="..\Contracts\Contracts.csproj" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Compile Update="Components\Pages\RegisterStepTwoInputModel.cs">
+        <DependentUpon>RegisterPage.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\RegisterFormInputModel.cs">
+        <DependentUpon>RegisterPage.razor</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

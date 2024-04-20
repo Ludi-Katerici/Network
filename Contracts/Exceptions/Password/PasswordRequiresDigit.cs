@@ -1,6 +1,4 @@
-﻿using Server.Common.Core.Abstract;
-
-namespace Server.Common.Core.Exceptions.Password;
+﻿namespace Contracts.Exceptions.Password;
 
 public sealed class PasswordRequiresDigit : IException
 {

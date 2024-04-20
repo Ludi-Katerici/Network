@@ -12,6 +12,18 @@
     src: url('../fonts/mont.otf');
 }
 
+.validation-message {
+    color: red;
+}
+
+input.invalid {
+    border: 1px solid red !important;
+}
+
+textarea.invalid {
+    border: 1px solid red !important;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

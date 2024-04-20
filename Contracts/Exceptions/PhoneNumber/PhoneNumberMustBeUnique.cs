@@ -1,6 +1,4 @@
-﻿using Server.Common.Core.Abstract;
-
-namespace Server.Common.Core.Exceptions.PhoneNumber;
+﻿namespace Contracts.Exceptions.PhoneNumber;
 
 public sealed class PhoneNumberMustBeUnique : IException
 {

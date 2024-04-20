@@ -19,7 +19,7 @@ public sealed class RegionsService
         }
     }
 
-    public static void InitializeCitiesByRegion(Dictionary<string, List<string>> citiesByRegion)
+    private static void InitializeCitiesByRegion(Dictionary<string, List<string>> citiesByRegion)
     {
         citiesByRegion["София"] = ["София", "Бухово", "Нови Искър", "Банкя"];
         citiesByRegion["София област"] = ["Божурище", "Ботевград", "Годеч", "Долна баня", "Драгоман", "Елин Пелин", "Етрополе", "Златица", "Ихтиман", "Копривщица", "Костенец", "Момин проход", "Костинброд", "Пирдоп", "Правец", "Самоков", "Своге", "Сливница"];

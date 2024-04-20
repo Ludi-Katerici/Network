@@ -1,4 +1,4 @@
-﻿namespace Server.Common.Core.Abstract;
+﻿namespace Contracts.Exceptions;
 
 public interface IException
 {

@@ -1,6 +1,4 @@
-﻿using Server.Common.Core.Abstract;
-
-namespace Server.Common.Core.Exceptions.Email;
+﻿namespace Contracts.Exceptions.Email;
 
 public sealed class EmailMustBeUnique : IException
 {

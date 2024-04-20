@@ -24,7 +24,7 @@ public static class ValidationExtensions
 
         return result.IsValid;
     }
-    
+
     public static async Task<bool> ValidateFormModelAsync<TModel>(this AbstractValidator<TModel> validator, TModel model, EditContext formContext, ValidationMessageStore validationMessageStore)
     {
         validationMessageStore.Clear();
@@ -33,6 +33,10 @@ public static class ValidationExtensions
 
         foreach (var error in result.Errors)
         {
+            if (error.ErrorMessage.Contains("Моля"))
+            {
+                error.ErrorMessage = string.Empty;
+            }
             validationMessageStore.Add(formContext.Field(error.PropertyName), error.ErrorMessage);
         }
 

@@ -1,16 +1,21 @@
 ﻿@inject IEventsApiService EventsApiService
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+@inject IAuthService AuthService
 
 @page "/details/{id:guid}"
 @using Contracts
 @using System.Text.Json
 @using Contracts.Endpoints.GetEventDetails
+@using Contracts.Endpoints.SignUpForEvent
+@using FrontEnd.Infrastructure.Authentication
 @using FrontEnd.Infrastructure.UtilityMethods
+
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
 <section class="flex w-full h-full bg-[#B9C1C8]">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
-        @if (this.EventDetails is not null)
+        @if (EventDetails != null)
         {
             <div class="grid grid-cols-1 lg:grid-cols-2 flex gap-8">
                 <div class="slider-box w-full h-full max-lg:mx-auto mx-0">
@@ -34,7 +39,16 @@
                     </div>
 
                     <span class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-primary text-white mt-2">Стартира в @(EventDetails.StartDate.ToString("g"))</span>
-                    <span class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-500 text-white mt-2 cursor-pointer">Запиши се</span>
+                    
+                    @if (disableSignUpButton)
+                    {
+                        <button disabled="disabled" type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-300 text-white mt-2">Вече си записан</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-500 text-white mt-2" @onclick="OnSignUpClick">Запиши се</button>
+                    }
+                    
                 </div>
             </div>
             <div class="mt-8 flex gap-2 flex-col bg-white rounded-md h-fit p-4 text-white mb-4 w-fit mx-auto px-16">
@@ -91,14 +105,41 @@
 
     GetEventDetailsResponse? EventDetails;
 
-    protected override async Task OnInitializedAsync()
+    bool disableSignUpButton = false;
+
+    async Task OnSignUpClick()
     {
-        var response = await EventsApiService.GetEventDetails(Id);
+        var response = await EventsApiService.SignUpForEvent(
+            new SignUpForEventRequest
+            {
+                EventId = this.EventDetails!.Id,
+            });
 
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine(JsonSerializer.Serialize(response.Content));
+            disableSignUpButton = true;
+            await JsRuntime.ToastSuccess("Успешно се записахте за събитието.");
+        }
+        else
+        {
+            await JsRuntime.ToastError("Грешка при записване за събитието. Моля опитайте отново.");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await EventsApiService.GetEventDetails(Id);
+        var authDetails = await this.AuthService.GetAuthStateDetails();
+        var userId = authDetails!.UserId;
+
+        if (response.IsSuccessStatusCode)
+        {
             this.EventDetails = response.Content;
+
+            if (this.EventDetails.Attendees.Any(x => x.Id == Guid.Parse(userId)))
+            {
+                disableSignUpButton = true;
+            }
         }
         else
         {

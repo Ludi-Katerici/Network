@@ -53,8 +53,6 @@ public class RegisterUserRequestValidator : Validator<RegisterUserRequest>
         this.RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .WithMessage("Моля въведете телефонен номер.")
-            .Must(x => x != "0876985878")
-            .WithMessage("Този телефонен номер вече се използва.")
             .Must(phoneNumber => {
                 if (phoneNumber.Contains("+359"))
                 {

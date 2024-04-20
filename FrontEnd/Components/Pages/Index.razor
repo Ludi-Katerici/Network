@@ -32,16 +32,6 @@
 
         if (events.IsSuccessStatusCode)
         {
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
-            events.Content.Events.Add(events.Content.Events[0]);
             foreach (var @event in events.Content.Events)
             {
                 var lastList = Events.Last();

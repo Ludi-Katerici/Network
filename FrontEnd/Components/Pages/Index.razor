@@ -1,0 +1,65 @@
+﻿@page "/"
+@page "/index"
+@page "/events"
+@using Contracts
+@using System.Text.Json
+@using Contracts.Endpoints.GetAllEvents
+
+@inject IEventsApiService EventsApiService
+
+<div class="w-full h-full flex bg-[#B9C1C8]">
+    <div class="w-full gap-4 h-fit flex mt-6 mb-6">
+        <div class="flex flex-col w-full h-full gap-4 mx-auto items-center align-middle">
+            @foreach (var groupEvents in Events)
+            {
+                <div class="mx-auto flex w-full h-full gap-4">
+                    @foreach (var eventModel in groupEvents)
+                    {
+                        <Card Model="eventModel" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = new() { new List<GetAllEventsResponseModel.EventModel>() };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var events = await EventsApiService.GetAllEvents();
+
+        if (events.IsSuccessStatusCode)
+        {
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            events.Content.Events.Add(events.Content.Events[0]);
+            foreach (var @event in events.Content.Events)
+            {
+                var lastList = Events.Last();
+
+                if (lastList.Count == 5)
+                {
+                    Events.Add(new List<GetAllEventsResponseModel.EventModel>());
+                    lastList = Events.Last();
+                }
+
+                lastList.Add(@event);
+            }
+
+            Console.WriteLine(JsonSerializer.Serialize(Events));
+        }
+        else
+        {
+            Console.WriteLine("Error fetching events");
+        }
+    }
+}

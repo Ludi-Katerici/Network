@@ -1,0 +1,24 @@
+﻿@using Contracts.Endpoints.GetAllEvents
+<div class="bg-white border border-gray-200 rounded-lg shadow h-full w-1/6 flex flex-col mx-auto">
+    <a class="h-full w-full flex" href="#">
+        <img class="rounded-t-lg object-fit w-full h-full flex" src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcSHcaIGtAL8YQy1NEqScVdwj0ILcyFwC1mQqT6_v3Q_q_XGO-W3xVj92r-BbcEhDSoM8f3a3mfik4zEjdc" alt=""/>
+    </a>
+
+    <div class="p-5">
+        <span class="mb-2 text-2xl text-primary font-bold tracking-tight">Noteworthy technology acquisitions 2021</span>
+
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
+        <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300">
+            Read more
+            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+        </a>
+    </div>
+</div>
+
+
+@code {
+    [EditorRequired, Parameter]
+    public GetAllEventsResponseModel.EventModel Model { get; set; }
+}

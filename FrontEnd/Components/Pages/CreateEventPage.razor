@@ -3,8 +3,15 @@
 @using FrontEnd.Infrastructure
 @using System.Text.Json
 @using FrontEnd.Infrastructure.Authentication
+@using System.ComponentModel.DataAnnotations
+@using Contracts.Endpoints.CreateEvent
+@using FrontEnd.Infrastructure.UtilityMethods
+@using System.Collections.ObjectModel
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
+@inject CreateEventFormInputValidator Validator
+@inject IEventsApiService EventsService
+@inject IJSRuntime JsRuntime
 
 <AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
@@ -75,7 +82,7 @@
             <InputTextArea @bind-Value="FormInputModel.Description" rows="3" class="resize-none rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
         </div>
 
-
+        
         <button type="button" class="bg-secondary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center" @onclick="@OpenCategoriesModal">
             @{
                 var categoriesCount = Categories.Count(x => x.IsSelected);
@@ -84,7 +91,7 @@
             <span>@text</span>
         </button>
 
-        <button type="submit" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
+        <button type="submit" @onclick="OnSubmit" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
             <span>@(isLoading ? "Изчакайте..." : "Регистрирай събитие")</span>
         </button>
     </EditForm>
@@ -94,17 +101,7 @@
     [CascadingParameter]
     public IModalService Modal { get; set; }
 
-    private void OpenCategoriesModal()
-    {
-        this.Modal.Show<MultipleListModal>(
-            (nameof(MultipleListModal.Items), Categories)).Result.ContinueWith(x => {
-            if (x.Result.Data != null)
-            {
-                Console.WriteLine(JsonSerializer.Serialize(x.Result.Data));
-            }
-            this.StateHasChanged();
-        });
-    }
+    private void OpenCategoriesModal() => this.Modal.Show<MultipleListModal>((nameof(MultipleListModal.Items), Categories)).Result.ContinueWith(_ => this.StateHasChanged());
 
     private List<SelectableItem<string>> Categories = new()
     {
@@ -124,9 +121,60 @@
         Region = "София";
     }
 
+    async Task OnSubmit()
+    {
+        isLoading = true;
+        this.FormInputModel.City = City;
+        this.FormInputModel.Region = Region;
+        this.FormInputModel.Categories = Categories.Where(x => x.IsSelected).Select(x => x.Value).ToList();
+        
+        var isValid = await Validator.ValidateFormModelAsync(FormInputModel, FormContext, ValidationMessageStore);
+        if (!isValid)
+        {
+            isLoading = false;
+            return;
+        }
+        
+        var response = await EventsService.CreateEvent(new CreateEventRequest
+        {
+            Name = this.FormInputModel.Name,
+            Description = this.FormInputModel.Description,
+            StartDate = this.FormInputModel.StartTime,
+            Region = this.FormInputModel.Region,
+            City = this.FormInputModel.City,
+            Address = this.FormInputModel.Address,
+            Categories = this.FormInputModel.Categories
+        });
+        
+        if (response.IsSuccessStatusCode)
+        {
+            isLoading = false;
+            await this.JsRuntime.ToastSuccess("Успешно създадено събитие!");
+            NavigationManager.NavigateTo("/events");
+        }
+        else
+        {
+            var errorResponse = await response.Error.GetErrorResponse();
+            errorResponse.ConstructValidationMessages<RegisterFormInputModel>(FormContext, ValidationMessageStore, requestMap);
+            isLoading = false;
+            await this.JsRuntime.ToastError("Възникна грешка при създаването на събитието!");
+        }
+    }
+
     void OnSelectedRegion(ChangeEventArgs e) => this.Region = e.Value.ToString();
 
     void OnSelectedCity(ChangeEventArgs e) => this.City = e.Value.ToString();
+
+    static ReadOnlyDictionary<string, string> requestMap = new Dictionary<string, string>()
+    {
+        {nameof(FormInputModel.Name), nameof(CreateEventRequest.Name)},
+        {nameof(FormInputModel.Description), nameof(CreateEventRequest.Description)},
+        {nameof(FormInputModel.StartTime), nameof(CreateEventRequest.StartDate)},
+        {nameof(FormInputModel.Region), nameof(CreateEventRequest.Region)},
+        {nameof(FormInputModel.City), nameof(CreateEventRequest.City)},
+        {nameof(FormInputModel.Address), nameof(CreateEventRequest.Address)},
+        {nameof(FormInputModel.Categories), nameof(CreateEventRequest.Categories)}
+    }.AsReadOnly();
 
     private bool isLoading;
     string City;

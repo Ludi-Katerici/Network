@@ -28,4 +28,8 @@ builder.Services.AddRefitClient<IIdentityApiService>()
     .ConfigureHttpClient(x => x.BaseAddress = new Uri("https://localhost:7050/api"))
     .AddHttpMessageHandler<CookieHandler>();
 
+builder.Services.AddRefitClient<IEventsApiService>()
+    .ConfigureHttpClient(x => x.BaseAddress = new Uri("https://localhost:7050/api"))
+    .AddHttpMessageHandler<CookieHandler>();
+
 await builder.Build().RunAsync();

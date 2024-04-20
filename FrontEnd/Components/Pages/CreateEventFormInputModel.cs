@@ -2,7 +2,7 @@
 
 namespace FrontEnd.Components.Pages;
 
-internal sealed class CreateEventFormInputModel
+public sealed class CreateEventFormInputModel
 {
     public string Name { get; set; }
     

@@ -1,13 +1,11 @@
 ﻿@page "/Login"
-@using System.Text.Json
 @using Contracts
-@using Contracts.Endpoints.LoginUser
-@using FluentValidation
+@using Contracts.Endpoints.LoginUser    
 @using FrontEnd.Infrastructure.Authentication
 @using FrontEnd.Infrastructure.UtilityMethods
 
 @inject LoginFormInputModelValidator Validator 
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 @inject IIdentityApiService IdentityApiService
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
@@ -51,7 +49,7 @@
 
         if (validationResult.IsValid is false)
         {
-            await JSRuntime.ToastError("Грешен email или парола!");
+            await JsRuntime.ToastError("Грешен email или парола!");
             return;
         }
 
@@ -70,13 +68,13 @@
                 Content: not null
             })
         {
-            await JSRuntime.ToastSuccess("Успешно влизане!");
+            await JsRuntime.ToastSuccess("Успешно влизане!");
             await SetAuthDetails(result.Content);
             this.NavigationManager.NavigateTo("/");
         }
         else
         {
-            await JSRuntime.ToastError("Грешен email или парола!");
+            await JsRuntime.ToastError("Грешен email или парола!");
         }
     }
     

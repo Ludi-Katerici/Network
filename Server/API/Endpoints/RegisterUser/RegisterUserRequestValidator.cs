@@ -85,8 +85,6 @@ public class RegisterUserRequestValidator : Validator<RegisterUserRequest>
             .NotEmpty()
             .WithMessage("Моля въведете град.")
             .Must((dto, city) => {
-                Console.WriteLine(JsonSerializer.Serialize(dto));
-                Console.WriteLine(JsonSerializer.Serialize(RegionsService.Regions));
                 var region = RegionsService.Regions.FirstOrDefault(x => x.RegionName == dto.Region);
                 
                 if (region is null)

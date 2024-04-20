@@ -4,6 +4,19 @@ namespace Server.Core.Models;
 
 public sealed class Event : Entity<Guid>, IAuditInformation
 {
+    public Event(string title, string region, string city, string address, List<string> categories, string description, Guid creatorId, DateTime startDate) 
+        : base(Guid.NewGuid())
+    {
+        this.Title = title;
+        this.Region = region;
+        this.City = city;
+        this.Address = address;
+        this.Categories = categories;
+        this.Description = description;
+        this.CreatorId = creatorId;
+        this.StartDate = startDate;
+    }
+    
     public string Title { get; set; }
     
     public string Region { get; set; }
@@ -15,7 +28,7 @@ public sealed class Event : Entity<Guid>, IAuditInformation
     public Guid CreatorId { get; set; }
     public IdentityUser Creator { get; set; }
     
-    public DateTimeOffset StartDate { get; set; }
+    public DateTime StartDate { get; set; }
     
     public List<EventIdentityUser> Attendees { get; set; } = new();
     

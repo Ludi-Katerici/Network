@@ -52,15 +52,14 @@ namespace Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset?>("ModifiedOn")
-                        .IsRequired()
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("StartDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()

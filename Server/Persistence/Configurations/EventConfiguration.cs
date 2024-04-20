@@ -20,7 +20,6 @@ internal sealed class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(x => x.CreatorId).IsRequired();
         builder.Property(x => x.StartDate).IsRequired();
         builder.Property(x => x.CreatedOn).IsRequired();
-        builder.Property(x => x.ModifiedOn).IsRequired();
 
         builder.HasOne(x => x.Creator)
             .WithMany(x => x.EventsCreated)

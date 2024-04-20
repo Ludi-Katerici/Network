@@ -23,6 +23,7 @@ public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<Identit
         builder.Property(x => x.AdditionalInformation).IsRequired();
         builder.Property(x => x.Work).IsRequired();
         builder.Property(x => x.Education).IsRequired();
+        builder.Property(x => x.CreatedOn).IsRequired();
 
         builder.HasMany(x => x.EventsCreated)
             .WithOne(x => x.Creator)

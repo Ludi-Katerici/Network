@@ -6,7 +6,6 @@ namespace Server.Persistence.Configurations;
 
 internal sealed class FriendRelationshipConfiguration : IEntityTypeConfiguration<FriendRelationship>
 {
-
     public void Configure(EntityTypeBuilder<FriendRelationship> builder)
     {
         builder.HasKey(x => new {x.ReceiverId, x.SenderId});

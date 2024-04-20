@@ -25,4 +25,5 @@ public class DataContext : BaseDbContext
     
     public DbSet<EventIdentityUser> EventIdentityUsers { get; set; } = default!;
     
+    public DbSet<FriendRelationship> FriendRelationships { get; set; } = default!;
 }

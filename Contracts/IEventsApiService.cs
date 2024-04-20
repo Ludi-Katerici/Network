@@ -1,6 +1,7 @@
 ﻿using Contracts.Endpoints.CreateEvent;
 using Contracts.Endpoints.GetAllEvents;
 using Contracts.Endpoints.GetEventDetails;
+using Contracts.Endpoints.SendFriend;
 using Contracts.Endpoints.SignUpForEvent;
 using Refit;
 
@@ -19,4 +20,7 @@ public interface IEventsApiService
     
     [Post(SignUpForEventRequest.Route)]
     Task<IApiResponse> SignUpForEvent([Body] SignUpForEventRequest request);
+    
+    [Post(SendFriendRequest.Route)]
+    Task<IApiResponse> SendFriendRequestTo([Body] SendFriendRequest request);
 }

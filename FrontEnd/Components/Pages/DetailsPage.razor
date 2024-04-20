@@ -6,6 +6,7 @@
 @page "/details/{id:guid}"
 @using Contracts
 @using Contracts.Endpoints.GetEventDetails
+@using Contracts.Endpoints.SendFriend
 @using Contracts.Endpoints.SignUpForEvent
 @using FrontEnd.Infrastructure.Authentication
 @using FrontEnd.Infrastructure.UtilityMethods
@@ -38,7 +39,7 @@
                     </div>
 
                     <span class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-primary text-white mt-2">Стартира в @(EventDetails.StartDate.ToString("g"))</span>
-                    
+
                     @if (disableSignUpButton)
                     {
                         <button disabled="disabled" type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-300 text-white mt-2">Вече си записан</button>
@@ -47,7 +48,7 @@
                     {
                         <button type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-500 text-white mt-2" @onclick="OnSignUpClick">Запиши се</button>
                     }
-                    
+
                 </div>
             </div>
             <div class="mt-8 flex gap-2 flex-col bg-white rounded-md h-fit p-4 text-white mb-4 w-fit mx-auto px-16">
@@ -59,12 +60,12 @@
                     {
                         continue;
                     }
-                    
+
                     <div class="bg-secondary px-4 py-4 rounded-md w-fit flex flex-col gap-4">
                         <div class="flex gap-4">
                             <span>@attendee.FullName</span>
                             <span class="ml-auto">
-                                <img class="cursor-pointer" src="images/add-friend.png" alt="Add Friend"/>
+                                <img class="cursor-pointer" src="images/add-friend.png" alt="Add Friend" @onclick="() => OnAddFriendClick(attendee.Id)"/>
                             </span>
                         </div>
 
@@ -78,24 +79,6 @@
                         </div>
                     </div>
                 }
-
-                <div class="bg-secondary px-4 py-4 rounded-md w-fit flex flex-col gap-4">
-                    <div class="flex gap-4">
-                        <span>Синан Абдулгафуров</span>
-                        <span class="ml-auto">
-                            <img class="cursor-pointer" src="images/add-friend.png" alt="Add Friend"/>
-                        </span>
-                    </div>
-
-                    <div class="flex w-full gap-2">
-                        <span>Хобита:</span>
-                        <span class="bg-primary rounded-md px-2">Кучета, КоткиКучета, КоткиКучета, Котки</span>
-                    </div>
-                    <div class="flex w-full gap-2">
-                        <span>Търси:</span>
-                        <span class="bg-primary rounded-md px-2">Кучета, КоткиКучета, КоткиКучета, Котки</span>
-                    </div>
-                </div>
             </div>
         }
     </div>
@@ -106,7 +89,7 @@
 
     [Parameter]
     public Guid Id { get; set; }
-    
+
     Guid UserId { get; set; }
 
     GetEventDetailsResponse? EventDetails;
@@ -129,6 +112,24 @@
         else
         {
             await JsRuntime.ToastError("Грешка при записване за събитието. Моля опитайте отново.");
+        }
+    }
+
+    async Task OnAddFriendClick(Guid receiverId)
+    {
+        var response = await EventsApiService.SendFriendRequestTo(
+            new SendFriendRequest
+            {
+                ReceiverId = receiverId,
+            });
+
+        if (response.IsSuccessStatusCode)
+        {
+            await JsRuntime.ToastSuccess("Успешно изпратихте покана за приятелство.");
+        }
+        else
+        {
+            await JsRuntime.ToastError("Вече имате изпратена/получена покана за приятелство към този потребител.");
         }
     }
 

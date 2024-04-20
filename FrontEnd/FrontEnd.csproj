@@ -40,6 +40,9 @@
       <Compile Update="Components\Pages\LoginFormInputModel.cs">
         <DependentUpon>LoginPage.razor</DependentUpon>
       </Compile>
+      <Compile Update="Components\Pages\CreateEventFormInputModel.cs">
+        <DependentUpon>CreateEventPage.razor</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

@@ -80,7 +80,7 @@
                     </label>
                     <select @onchange="@OnSelectedRegion" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
                         @{
-                            foreach (var region in RegionsList)
+                            foreach (var region in RegionsService.Regions)
                             {
                                 <option class="bg-white" value="@region.RegionName">@region.RegionName</option>
                             }
@@ -94,7 +94,7 @@
                     </label>
                     <select @onchange="@OnSelectedCity" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
                         @{
-                            foreach (var city in RegionsList.FirstOrDefault(x => x.RegionName == Region)!.Cities)
+                            foreach (var city in RegionsService.Regions.FirstOrDefault(x => x.RegionName == Region)!.Cities)
                             {
                                 <option class="bg-white" value="@city">@city</option>
                             }
@@ -178,7 +178,6 @@
         Step = 1;
         City = "София";
         Region = "София";
-        this.RegionsList = RegionsService.Regions;
     }
 
     void OnSelectedRegion(ChangeEventArgs e) => this.Region = e.Value.ToString();
@@ -317,7 +316,6 @@
     bool loading;
     string City;
     string Region;
-    List<Region> RegionsList;
     private string interests;
     private string searchings;
 }

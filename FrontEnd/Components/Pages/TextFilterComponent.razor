@@ -1,0 +1,23 @@
+﻿@using FrontEnd.Infrastructure
+
+<div class="@VisibilityClass mx-auto border-[#d3d3d3] border-solid border-2 bg-white max-h-20 overflow-auto overflow-y-auto">
+    <div class="p-2 px-8 items-center align-middle">
+        @foreach (var item in this.SelectableItems)
+        {
+            <div class="w-full flex justify-start">
+                <InputCheckbox class="my-auto" type="checkbox" @bind-Value="@item.IsSelected"/>
+                <p class="my-auto ml-1">@item.Value</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    [EditorRequired, Parameter]
+    public string VisibilityClass { get; set; } = "block";
+
+    [EditorRequired, Parameter]
+    public List<SelectableItem<string>> SelectableItems { get; set; } = new();
+
+}

@@ -1,0 +1,37 @@
+﻿@using FrontEnd.Infrastructure
+
+<div class="flex flex-col gap-4">
+    <div class="p-2 text-center text-xl">
+        Избери категории
+    </div>
+
+    <div class="w-full flex justify-center items-center border-t border-t-slate-300 py-4 gap-4 max-h-[20rem] overflow-y-auto">
+        <div class="p-2 px-8 items-center align-middle max-h-[20rem]">
+            @foreach (var item in this.Items)
+            {
+                <div class="w-full flex justify-start">
+                    <InputCheckbox class="my-auto text-xl w-[20px] h-[20px]" type="checkbox" @bind-Value="@item.IsSelected"/>
+                    <p class="ml-1 text-xl mb-2">@item.Value</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <button type="button" class="bg-secondary w-1/2 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center" @onclick="@Confirm">
+        <span>Потвърди категории</span>
+    </button>
+
+</div>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public List<SelectableItem<string>> Items { get; set; } = new();
+    
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+
+    async Task Confirm()
+    {
+        await ModalInstance.CloseAsync(ModalResult.Ok(Items.Where(x => x.IsSelected).Select(x => x.Value).ToList()));
+    }
+}

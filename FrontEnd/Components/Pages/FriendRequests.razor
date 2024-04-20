@@ -1,0 +1,22 @@
+﻿@inject NavigationManager NavigationManager
+
+@page "/FriendRequests"
+
+<div class="flex items-center gap-8 justify-center mx-auto">
+    <button class="bg-primary p-10 rounded-3xl text-center text-white font-semibold text-2xl" @onclick='() => NavigationManager.NavigateTo("/sent-friend-requests")'>
+        Изпратени покани
+    </button>
+    
+    <button class="bg-secondary p-10 rounded-3xl text-center text-white font-semibold text-2xl" @onclick='() => NavigationManager.NavigateTo("/confirmed-friend-requests")'>
+        Активни приятелства
+    </button>
+
+    <button class="bg-green-500 p-10 rounded-3xl text-center text-white font-semibold text-2xl" @onclick='() => NavigationManager.NavigateTo("/received-friend-requests")'>
+        Получени покани
+    </button>
+</div>
+
+
+@code {
+
+}

@@ -7,9 +7,4 @@ public sealed class AuthStateDetails
     public List<string> Claims { get; set; } = [];
 
     public string UserId { get; set; } = string.Empty;
-    
-    public string CompanyId { get; set; } = string.Empty;
-    public string CompanyName { get; set; } = string.Empty;
-    
-    public List<string> Sites { get; set; } = [];
 }

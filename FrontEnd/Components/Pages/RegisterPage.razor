@@ -1,10 +1,7 @@
 ﻿@page "/Register"
 @using FrontEnd.Infrastructure.UtilityMethods
 @using Contracts
-@using System.ComponentModel.DataAnnotations
-@using System.Text.Json
 @using Contracts.Endpoints.RegisterUser
-@using FluentValidation
 @using System.Collections.ObjectModel
 @inject IJSRuntime JsRuntime
 @inject RegisterFormInputModelValidator Validator
@@ -252,16 +249,10 @@
     async Task OnSubmit()
     {
         this.loading = true;
-        Console.WriteLine("Submitting form...");
         var isValid = await Validator.ValidateFormModelAsync(FormInputModel, FormContext, ValidationMessageStore);
 
         if (isValid is false)
         {
-            Console.WriteLine($"Form is not valid! {this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(this.FormInputModel.Interests))).Count()}");
-            foreach (var message in this.FormContext.GetValidationMessages())
-            {
-                Console.WriteLine(message);
-            }
             this.loading = false;
             return;
         }
@@ -294,15 +285,15 @@
         var response = await IdentityApiService.RegisterUser(user);
         if (response.IsSuccessStatusCode)
         {
-            this.JsRuntime.ToastSuccess("Успешно се регистрирахте!");
-            NavigationManager.NavigateTo("/");
+            await this.JsRuntime.ToastSuccess("Успешно се регистрирахте! Моля влезте в профила си.");
+            NavigationManager.NavigateTo("/Login");
             return;
         }
         
         var errorResponse = await response.Error.GetErrorResponse();
         errorResponse.ConstructValidationMessages<RegisterFormInputModel>(FormContext, ValidationMessageStore, requestMap);
         this.Step--;
-        this.JsRuntime.ToastError("Възникна грешка при регистрацията!");
+        await this.JsRuntime.ToastError("Възникна грешка при регистрацията!");
     }
 
     static ReadOnlyDictionary<string, string> requestMap = new Dictionary<string, string>()

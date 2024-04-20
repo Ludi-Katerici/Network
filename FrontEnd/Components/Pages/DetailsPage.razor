@@ -1,4 +1,4 @@
-﻿@page "/details"
+﻿@page "/details/{id:guid}"
 
 <section class="flex w-full h-full bg-[#B9C1C8]">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
@@ -71,6 +71,10 @@
                 </div>
 
                 <div class="flex w-full gap-2">
+                    <span>Работа:</span>
+                    <span class="bg-primary rounded-md px-2">Кучета, КоткиКучета, КоткиКучета, Котки</span>
+                </div>
+                <div class="flex w-full gap-2">
                     <span>Хобита:</span>
                     <span class="bg-primary rounded-md px-2">Кучета, КоткиКучета, КоткиКучета, Котки</span>
                 </div>
@@ -86,4 +90,11 @@
 
 @code {
 
+    [Parameter]
+    public Guid Id { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine(Id);
+    }
 }

@@ -1,4 +1,5 @@
-﻿using FrontEnd.Infrastructure.UtilityMethods;
+﻿using System.Text.Json;
+using FrontEnd.Infrastructure.UtilityMethods;
 using Microsoft.AspNetCore.Components;
 
 namespace FrontEnd.Infrastructure.Authentication;
@@ -29,6 +30,7 @@ public sealed class AuthorizeComponent : ComponentBase
             this.Claims.IsNullOrWhiteSpace())
         {
             var isAuthenticated = await this.AuthService.IsAuthenticated();
+            Console.WriteLine(JsonSerializer.Serialize(isAuthenticated));
             
             if (isAuthenticated is false)
             {
@@ -48,7 +50,7 @@ public sealed class AuthorizeComponent : ComponentBase
     private async Task<bool> MustHaveAuthorizationRequirements()
     {
         var authState = await this.AuthService.GetAuthStateDetails();
-
+        
         if (authState is null)
         {
             return false;

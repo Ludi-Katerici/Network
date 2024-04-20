@@ -2,6 +2,11 @@
 @using Contracts
 @using FrontEnd.Infrastructure
 @using System.Text.Json
+@using FrontEnd.Infrastructure.Authentication
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
 <div class="bg-white w-full flex flex-col h-full max-h-fit">
     <EditForm EditContext="FormContext" class="w-full flex flex-col gap-2 mt-8">
@@ -80,7 +85,7 @@
         </button>
 
         <button type="submit" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
-            <span>@(isLoading ? "Изчакайте..." : "Влез")</span>
+            <span>@(isLoading ? "Изчакайте..." : "Регистрирай събитие")</span>
         </button>
     </EditForm>
 </div>

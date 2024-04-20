@@ -4,7 +4,7 @@ using Server.Core.Models;
 
 namespace Server.Persistence;
 
-internal sealed class DataContext : BaseDbContext
+public class DataContext : BaseDbContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {

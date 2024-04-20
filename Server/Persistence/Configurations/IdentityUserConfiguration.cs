@@ -10,8 +10,17 @@ public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<Identit
     {
         builder.HasKey(x => x.Id);
         
+        builder.Property(x => x.Name).IsRequired();
+        builder.Property(x => x.Family).IsRequired();
         builder.Property(x => x.Email).IsRequired();
+        builder.Property(x => x.PhoneNumber).IsRequired();
         builder.Property(x => x.PasswordHash).IsRequired();
+        builder.Property(x => x.Region).IsRequired();
+        builder.Property(x => x.City).IsRequired();
+        builder.Property(x => x.ProfessionalExperience).IsRequired();
+        builder.Property(x => x.Interests).IsRequired();
+        builder.Property(x => x.Searchings).IsRequired();
+        builder.Property(x => x.AdditionalInformation).IsRequired();
         
         builder.OwnsMany(x => x.Logins, navigationBuilder =>
         {

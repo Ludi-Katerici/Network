@@ -64,7 +64,7 @@ public class RegisterFormInputModelValidator : AbstractValidator<RegisterFormInp
 
                 return phoneNumber.Length == 10;
             })
-            .WithMessage(PhoneNumberMustBeUnique.Instance.ErrorMessage);
+            .WithMessage("Моля, въведете валиден телефонен номер.");
             
 
         this.RuleFor(x => x.Password)

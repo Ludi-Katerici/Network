@@ -12,7 +12,7 @@ namespace Server.API.Endpoints.LoginUser;
 internal sealed class LoginUserEndpoint : Endpoint<LoginUserRequest, LoginUserResponse>
 {
     public DataContext DataContext { get; set; }
-    public PasswordHasher<IdentityUser> PasswordHasher { get; set; }
+    public IPasswordHasher<IdentityUser> PasswordHasher { get; set; }
 
     public override void Configure()
     {

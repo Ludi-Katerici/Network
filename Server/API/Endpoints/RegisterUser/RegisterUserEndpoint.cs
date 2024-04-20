@@ -12,6 +12,8 @@ internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
     public IPasswordHasher<IdentityUser> PasswordHasher { get; set; }
     public override void Configure()
     {
+        this.DontThrowIfValidationFails();
+        this.DontCatchExceptions();
         this.Post(RegisterUserRequest.Route);
         this.AllowAnonymous();
     }

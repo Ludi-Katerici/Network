@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
     
     public static IServiceCollection AddCommonModule(this IServiceCollection services)
     {
-        //services.AddHostedService<DbContextAppInitializer>();
+        services.AddHostedService<DbContextAppInitializer>();
         services.AddTransient<IClock, Clock>();
         
         return services;

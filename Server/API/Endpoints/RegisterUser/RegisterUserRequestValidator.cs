@@ -12,7 +12,7 @@ namespace Server.API.Endpoints.RegisterUser;
 
 internal sealed class RegisterUserRequestValidator : Validator<RegisterUserRequest>
 {
-    public RegisterUserRequestValidator(DataContext dataContext)
+    public RegisterUserRequestValidator()
     {
         this.RuleFor(x => x.Name)
             .NotEmpty()
@@ -32,7 +32,8 @@ internal sealed class RegisterUserRequestValidator : Validator<RegisterUserReque
                 {
                     return true;
                 }
-                
+
+                var dataContext = Resolve<DataContext>();
                 var emailToUpperCase = email.ToUpper();
                 var isEmailTaken = await dataContext.Users.AnyAsync(x => x.Email == emailToUpperCase, token);
                 

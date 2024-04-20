@@ -1,5 +1,6 @@
 ﻿@page "/confirmed-friend-requests"
 @using Contracts
+@using Contracts.Endpoints.DeleteFriendRequest
 @using Contracts.Endpoints.GetAllFriendRequests
 @using FrontEnd.Infrastructure.UtilityMethods
 @inject IFriendsApiService FriendsApiService
@@ -26,7 +27,7 @@
                     <span>@friendRequest.ReceiverFullName</span>
                     <span>Приятели от: @(friendRequest.AcceptedAt!.Value.ToString("g"))</span>
                     <div class="flex">
-                        <button class="bg-red rounded-md px-2 py-1">Премахни</button>
+                        <button class="bg-red rounded-md px-2 py-1" @onclick='async () => await this.OnRemoveFriend(friendRequest.ReceiverId, friendRequest.SenderId)'>Премахни</button>
                     </div>
                 </div>
             }
@@ -51,5 +52,26 @@
             await this.JsRuntime.ToastError("Неуспешно зареждане на приятелства.");
             this.NavigationManager.NavigateTo("/friend-requests");
         }
+    }
+    
+    async Task OnRemoveFriend(Guid receiverId, Guid senderId)
+    {
+        var response = await this.FriendsApiService.DeleteAFriendRequest(
+            new DeleteFriendRequest
+            {
+                SenderId = senderId,
+                ReceiverId = receiverId
+            });
+
+        if (response.IsSuccessStatusCode)
+        {
+            await this.JsRuntime.ToastSuccess("Приятеля е премахнат успешно.");
+        }
+        else
+        {
+            await this.JsRuntime.ToastError("Неуспешно премахване на приятел.");
+        }
+
+        this.NavigationManager.NavigateTo("/friend-requests"); 
     }
 }

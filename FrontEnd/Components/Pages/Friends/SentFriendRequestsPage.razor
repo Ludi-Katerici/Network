@@ -1,6 +1,7 @@
 ﻿@page "/sent-friend-requests"
 @using Contracts.Endpoints.GetAllFriendRequests
 @using Contracts
+@using Contracts.Endpoints.DeleteFriendRequest
 @using FrontEnd.Infrastructure.Authentication
 @using FrontEnd.Infrastructure.UtilityMethods
 @inject IFriendsApiService FriendsApiService
@@ -29,7 +30,7 @@
                     <span>Към: @friendRequest.SenderFullName</span>
                     <span>Изпратена на: @(friendRequest.CreatedAt.ToString("g"))</span>
                     <div class="flex">
-                        <button class="bg-red rounded-md px-2 py-1">Откажи</button>
+                        <button class="bg-red rounded-md px-2 py-1" @onclick='async () => await this.OnRemoveFriend(friendRequest.ReceiverId)'>Откажи</button>
                     </div>
                 </div>
             }
@@ -55,5 +56,27 @@
             await this.JsRuntime.ToastError("Неуспешно зареждане на приятелства.");
             this.NavigationManager.NavigateTo("/friend-requests");
         }
+    }
+
+    async Task OnRemoveFriend(Guid receiverId)
+    {
+        var userId = (await this.AuthService.GetAuthStateDetails())!.UserId;
+        var response = await this.FriendsApiService.DeleteAFriendRequest(
+            new DeleteFriendRequest
+            {
+                SenderId = Guid.Parse(userId),
+                ReceiverId = receiverId
+            });
+
+        if (response.IsSuccessStatusCode)
+        {
+            await this.JsRuntime.ToastSuccess("Поканата е премахната успешно.");
+        }
+        else
+        {
+            await this.JsRuntime.ToastError("Неуспешно премахване на поканата.");
+        }
+
+        this.NavigationManager.NavigateTo("/friend-requests"); 
     }
 }

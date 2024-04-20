@@ -12,10 +12,7 @@ internal sealed class FriendRelationshipConfiguration : IEntityTypeConfiguration
         
         builder.HasOne(x => x.Sender)
             .WithMany(x => x.FriendRelationships)
-            .HasForeignKey(x => x.SenderId);
-        
-        builder.HasOne(x => x.Receiver)
-            .WithMany(x => x.FriendRelationships)
-            .HasForeignKey(x => x.ReceiverId);
+            .HasForeignKey(x => x.SenderId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -4,21 +4,59 @@
         <img class="rounded-t-lg object-fit w-full h-full flex" src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcSHcaIGtAL8YQy1NEqScVdwj0ILcyFwC1mQqT6_v3Q_q_XGO-W3xVj92r-BbcEhDSoM8f3a3mfik4zEjdc" alt=""/>
     </a>
 
-    <div class="p-5">
-        <span class="mb-2 text-2xl text-primary font-bold tracking-tight">Noteworthy technology acquisitions 2021</span>
+    <div class="p-3 flex flex-col gap-2">
+        <span class="mb-2 text-2xl text-primary font-bold tracking-tight">@Model.Title</span>
 
-        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-        <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300">
-            Read more
-            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-            </svg>
-        </a>
+        @{
+            int endLength = Model.Description.Length > 80 ? 80 : Model.Description.Length;
+        }
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">@(Model.Description.Substring(0, endLength) + "...")</p>
+
+        <div class="flex w-full gap-2">
+            <div class="flex rounded-md bg-slate-500 text-white text-sm text-center items-center align-middle px-2">
+                @{
+                    var categoriesText = string.Join(",", Model.Categories);
+                    int endLength2 = categoriesText.Length > 40 ? 40 : categoriesText.Length;
+                    categoriesText = categoriesText.Substring(0, endLength2);
+                    int indexOfLastComma = categoriesText.LastIndexOf(",", StringComparison.Ordinal);
+
+                    if (indexOfLastComma != -1)
+                    {
+                        categoriesText = categoriesText.Substring(0, indexOfLastComma);
+                    }
+                }
+                <span class="m-auto mx-auto my-auto font-semibold">@categoriesText</span>
+            </div>
+        </div>
+
+        
+        <div class="flex w-full">
+            <span class="font-medium text-primary text-sm">Добавен от: @Model.CreatorFullName</span>
+        </div>
+
+        
+        <div class="flex w-full gap-2">
+            <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300">
+                Научи повече
+                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+            <div class="flex bg-primary rounded-md text-white text-sm text-center items-center align-middle px-2">
+                <span class="m-auto mx-auto my-auto font-semibold">@Model.Region</span>
+            </div>
+            <div class="flex rounded-md bg-primary text-white text-sm text-center items-center align-middle px-2">
+                <span class="m-auto mx-auto my-auto font-semibold">@Model.City</span>
+            </div>
+        </div>
+        
     </div>
 </div>
 
 
 @code {
+
     [EditorRequired, Parameter]
     public GetAllEventsResponseModel.EventModel Model { get; set; }
+
 }

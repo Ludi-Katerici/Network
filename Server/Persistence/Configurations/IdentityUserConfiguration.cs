@@ -29,7 +29,6 @@ public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<Identit
             .WithOne(x => x.Creator)
             .HasForeignKey(x => x.CreatorId);
         
-        
         builder.OwnsMany(x => x.Logins, navigationBuilder =>
         {
             navigationBuilder.WithOwner();

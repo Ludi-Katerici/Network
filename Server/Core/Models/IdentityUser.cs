@@ -55,6 +55,8 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
     public string Searchings { get; set; }
 
     public string AdditionalInformation { get; set; }
+    
+    public List<FriendRelationship> FriendRelationships { get; set; } = new();
 
     public AuthorizationDetails AuthorizationDetails { get; private set; }
     

@@ -91,7 +91,7 @@
                     <label class="font-semibold">
                         Град: <span class="text-red">*</span>
                     </label>
-                    <select @onchange="@OnSelectedCity"  class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
+                    <select @onchange="@OnSelectedCity" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
                         @{
                             foreach (var city in RegionsList.FirstOrDefault(x => x.RegionName == Region)!.Cities)
                             {
@@ -123,15 +123,18 @@
                     Професионален Опит: <span class="text-red">*</span>
                 </label>
                 <ValidationMessage class="text-sm validation-message" For="() => FormInputModel.ProfessionalExperience"></ValidationMessage>
-                <InputTextArea @bind-Value="FormInputModel.ProfessionalExperience" rows="2"  id="Family" name="Family" class="resize-none rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
+                <InputText @bind-Value="FormInputModel.ProfessionalExperience" rows="2" id="Family" name="Family" class="resize-none rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
             </div>
 
             <div class="flex flex-col w-1/4 mx-auto">
                 <label class="font-semibold">
                     Интереси/Хобита/Умения: <span class="text-red">*</span>
                 </label>
+                @{
+                    var invalidInterests = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(this.FormInputModel.Interests))).Any() ? "invalid" : "";
+                }
                 <ValidationMessage class="text-sm validation-message" For="() => FormInputModel.Interests"></ValidationMessage>
-                <InputText @bind-Value="FormInputModel.Interests" class="rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
+                <input @oninput="@OnChangeInterests" @bind="@interests" class="@invalidInterests rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
             </div>
 
             <div class="flex flex-col w-1/4 mx-auto">
@@ -139,7 +142,10 @@
                     В търсене на: <span class="text-red">*</span>
                 </label>
                 <ValidationMessage class="text-sm validation-message" For="() => FormInputModel.Searchings"></ValidationMessage>
-                <InputText @bind-Value="FormInputModel.Searchings" class="rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
+                @{
+                    var invalidSearchings = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(this.FormInputModel.Searchings))).Any() ? "invalid": "";
+                }
+                <input @oninput="@OnChangeSearchings" @bind="@searchings" class="@invalidSearchings rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
             </div>
 
             <div class="flex flex-col w-1/4 mx-auto">
@@ -173,10 +179,45 @@
         Region = "София";
         this.RegionsList = RegionsService.Regions;
     }
-    
+
     void OnSelectedRegion(ChangeEventArgs e) => this.Region = e.Value.ToString();
 
     void OnSelectedCity(ChangeEventArgs e) => this.City = e.Value.ToString();
+
+    void OnChangeInterests(ChangeEventArgs e)
+    {
+        var value = e.Value.ToString();
+        var lastChar = value.ElementAtOrDefault(value.Length - 1);
+        var secondLastChar = value.ElementAtOrDefault(value.Length - 2);
+
+        if (secondLastChar != ',' && lastChar == ' ')
+        {
+            this.interests = value.TrimEnd() + ",";
+        }
+        else
+        {
+            this.interests = value;
+        }
+
+        this.FormInputModel.Interests = this.interests;
+    }
+    void OnChangeSearchings(ChangeEventArgs e)
+    {
+        var value = e.Value.ToString();
+        var lastChar = value.ElementAtOrDefault(value.Length - 1);
+        var secondLastChar = value.ElementAtOrDefault(value.Length - 2);
+
+        if (secondLastChar != ',' && lastChar == ' ')
+        {
+            this.searchings = value.TrimEnd() + ",";
+        }
+        else
+        {
+            this.searchings = value;
+        }
+
+        this.FormInputModel.Searchings = this.searchings;
+    }
 
     async Task GoToNextStep()
     {
@@ -187,18 +228,16 @@
         var phoneNumberValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.PhoneNumber)));
         var passwordValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.Password)));
         var confirmPasswordValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.ConfirmPassword)));
-        
+
         if ((!nameValidationMessages.Any() &&
-            !familyValidationMessages.Any() &&
-            !emailValidationMessages.Any() &&
-            !phoneNumberValidationMessages.Any() &&
-            !passwordValidationMessages.Any() &&
-            !confirmPasswordValidationMessages.Any()) is false)
+             !familyValidationMessages.Any() &&
+             !emailValidationMessages.Any() &&
+             !phoneNumberValidationMessages.Any() &&
+             !passwordValidationMessages.Any() &&
+             !confirmPasswordValidationMessages.Any()) is false)
         {
             return;
         }
-        
-        
 
         Step++;
         ValidationMessageStore.Clear();
@@ -214,7 +253,7 @@
 
         if (isValid is false)
         {
-            Console.WriteLine($"Form is not valid! {this.FormContext.GetValidationMessages().Count()}");
+            Console.WriteLine($"Form is not valid! {this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(this.FormInputModel.Interests))).Count()}");
             foreach (var message in this.FormContext.GetValidationMessages())
             {
                 Console.WriteLine(message);
@@ -237,4 +276,6 @@
     string City;
     string Region;
     List<Region> RegionsList;
+    private string interests;
+    private string searchings;
 }

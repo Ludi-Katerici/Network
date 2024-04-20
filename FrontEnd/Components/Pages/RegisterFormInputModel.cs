@@ -38,7 +38,7 @@ public class RegisterFormInputModelValidator : AbstractValidator<RegisterFormInp
             .NotEmpty()
             .WithMessage("Моля, въведете имейл адрес.")
             .EmailAddress()
-            .WithMessage("Моля, въведете валиден имейл адрес.")
+            .WithMessage("Имейл адресът е невалиден.")
             .MustAsync(async (x, _) => {
                 if (string.IsNullOrWhiteSpace(x))
                     return true;
@@ -64,7 +64,7 @@ public class RegisterFormInputModelValidator : AbstractValidator<RegisterFormInp
 
                 return phoneNumber.Length == 10;
             })
-            .WithMessage("Моля, въведете валиден телефонен номер.");
+            .WithMessage("Телефонния номер е невалиден.");
             
 
         this.RuleFor(x => x.Password)

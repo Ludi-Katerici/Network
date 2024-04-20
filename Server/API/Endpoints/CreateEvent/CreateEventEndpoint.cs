@@ -29,6 +29,7 @@ public class CreateEventEndpoint : Endpoint<CreateEventRequest>
         }
         
         var @event = new Event(
+            profilePicture: req.PictureUrl,
             title: req.Name,
             region: req.Region,
             city: req.City,

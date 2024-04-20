@@ -12,7 +12,7 @@ using Server.Persistence;
 namespace Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240420181811_Initial")]
+    [Migration("20240420224645_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -56,6 +56,10 @@ namespace Server.Migrations
 
                     b.Property<DateTimeOffset?>("ModifiedOn")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Region")
                         .IsRequired()
@@ -172,6 +176,10 @@ namespace Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfessionalExperience")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePictureUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

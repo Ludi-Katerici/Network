@@ -5,6 +5,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using FrontEnd;
+using FrontEnd.AzureServices;
 using FrontEnd.Components.Pages;
 using FrontEnd.Infrastructure;
 using FrontEnd.Infrastructure.Authentication;
@@ -14,9 +15,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
 builder.Services.AddLogging();
 builder.Services.AddScoped<MemoryStorageUtility>();
+builder.Services.AddScoped<IAzureStorage, AzureStorage>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterFormInputModelValidator>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IAuthService, AuthService>();

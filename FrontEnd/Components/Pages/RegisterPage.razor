@@ -4,10 +4,13 @@
 @using Contracts.Endpoints.RegisterUser
 @using System.Collections.ObjectModel
 @using System.Text.Json
+@using FrontEnd.AzureServices
+@using FrontEnd.Infrastructure
 @inject IJSRuntime JsRuntime
 @inject RegisterFormInputModelValidator Validator
 @inject IIdentityApiService IdentityApiService
 @inject NavigationManager NavigationManager
+@inject IAzureStorage AzureStorage
 
 <div class="bg-white w-full flex flex-col h-full">
     <EditForm EditContext="FormContext" class="w-full flex flex-col gap-2 mt-16">
@@ -67,6 +70,10 @@
                 <ValidationMessage class="text-sm validation-message" For="() => FormInputModel.ConfirmPassword"></ValidationMessage>
                 <InputText type="password" @bind-Value="FormInputModel.ConfirmPassword" class="rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
             </div>
+
+            <button type="button" @onclick="OnOpenProfilePictureModal" class="bg-secondary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-slate-500 transition-all">
+                <span>Качи профилна снимка</span>
+            </button>
 
             <button type="button" @onclick="GoToNextStep" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
                 <span>Следваща стъпка</span>
@@ -145,7 +152,7 @@
                 </label>
                 <ValidationMessage class="text-sm validation-message" For="() => FormInputModel.Searchings"></ValidationMessage>
                 @{
-                    var invalidSearchings = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(this.FormInputModel.Searchings))).Any() ? "invalid": "";
+                    var invalidSearchings = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(this.FormInputModel.Searchings))).Any() ? "invalid" : "";
                 }
                 <input @oninput="@OnChangeSearchings" @bind="@searchings" class="@invalidSearchings rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
             </div>
@@ -220,6 +227,27 @@
         this.FormInputModel.Searchings = this.searchings;
     }
 
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
+    InputPictureModel profilePicture;
+
+    async Task OnOpenProfilePictureModal()
+    {
+        await this.Modal.Show<ImageUploadModal>().Result.ContinueWith(x => {
+            if (x.Result is
+                {
+                    Confirmed: true,
+                    Data: not null
+                })
+            {
+                var modal = (InputPictureModel) x.Result.Data;
+                this.profilePicture = modal;
+            }
+        });
+    }
+
+
     async Task GoToNextStep()
     {
         await Validator.ValidateFormModelAsync(FormInputModel, FormContext, ValidationMessageStore);
@@ -230,6 +258,13 @@
         var passwordValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.Password)));
         var confirmPasswordValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.ConfirmPassword)));
 
+        
+        if (this.profilePicture is null || (string.IsNullOrWhiteSpace(this.profilePicture.Name) is false && this.profilePicture.Stream.Length > 0) is false)
+        {
+            await this.JsRuntime.ToastError("Моля качете профилна снимка!");
+            return;
+        }
+        
         if ((!nameValidationMessages.Any() &&
              !familyValidationMessages.Any() &&
              !emailValidationMessages.Any() &&
@@ -265,9 +300,18 @@
 
     async Task CreateUser()
     {
+        var blobDto = await AzureStorage.UploadAsync(this.profilePicture.Stream, this.profilePicture.Name);
+
+        if (blobDto.Error)
+        {
+            await this.JsRuntime.ToastError("Възникна грешка при качването на профилната снимка!");
+            return;
+        }
+        
         var user = new RegisterUserRequest
         {
             Name = FormInputModel.Name,
+            ProfilePictureUrl = blobDto.Blob.Uri!,
             Family = FormInputModel.Family,
             Email = FormInputModel.Email,
             PhoneNumber = FormInputModel.PhoneNumber,
@@ -289,7 +333,7 @@
             NavigationManager.NavigateTo("/Login");
             return;
         }
-        
+
         var errorResponse = await response.Error.GetErrorResponse();
         Console.WriteLine(JsonSerializer.Serialize(errorResponse));
         errorResponse.ConstructValidationMessages<RegisterFormInputModel>(FormContext, ValidationMessageStore, requestMap);
@@ -299,19 +343,19 @@
 
     static ReadOnlyDictionary<string, string> requestMap = new Dictionary<string, string>()
     {
-        {nameof(FormInputModel.Name), nameof(RegisterUserRequest.Name)},
-        {nameof(FormInputModel.Family), nameof(RegisterUserRequest.Family)},
-        {nameof(FormInputModel.Email), nameof(RegisterUserRequest.Email)},
-        {nameof(FormInputModel.PhoneNumber), nameof(RegisterUserRequest.PhoneNumber)},
-        {nameof(FormInputModel.Password), nameof(RegisterUserRequest.Password)},
-        {nameof(FormInputModel.Education), nameof(RegisterUserRequest.Education)},
-        {nameof(FormInputModel.Work), nameof(RegisterUserRequest.Work)},
-        {nameof(FormInputModel.ProfessionalExperience), nameof(RegisterUserRequest.ProfessionalExperience)},
-        {nameof(FormInputModel.Interests), nameof(RegisterUserRequest.Interests)},
-        {nameof(FormInputModel.Searchings), nameof(RegisterUserRequest.Searchings)},
-        {nameof(FormInputModel.AdditionalInformation), nameof(RegisterUserRequest.AdditionalInformation)},
-        {nameof(Region), nameof(RegisterUserRequest.Region)},
-        {nameof(City), nameof(RegisterUserRequest.City)},
+        { nameof(FormInputModel.Name), nameof(RegisterUserRequest.Name) },
+        { nameof(FormInputModel.Family), nameof(RegisterUserRequest.Family) },
+        { nameof(FormInputModel.Email), nameof(RegisterUserRequest.Email) },
+        { nameof(FormInputModel.PhoneNumber), nameof(RegisterUserRequest.PhoneNumber) },
+        { nameof(FormInputModel.Password), nameof(RegisterUserRequest.Password) },
+        { nameof(FormInputModel.Education), nameof(RegisterUserRequest.Education) },
+        { nameof(FormInputModel.Work), nameof(RegisterUserRequest.Work) },
+        { nameof(FormInputModel.ProfessionalExperience), nameof(RegisterUserRequest.ProfessionalExperience) },
+        { nameof(FormInputModel.Interests), nameof(RegisterUserRequest.Interests) },
+        { nameof(FormInputModel.Searchings), nameof(RegisterUserRequest.Searchings) },
+        { nameof(FormInputModel.AdditionalInformation), nameof(RegisterUserRequest.AdditionalInformation) },
+        { nameof(Region), nameof(RegisterUserRequest.Region) },
+        { nameof(City), nameof(RegisterUserRequest.City) },
     }.AsReadOnly();
 
     int Step;

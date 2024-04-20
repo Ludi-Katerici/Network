@@ -4,6 +4,7 @@ public sealed class CreateEventRequest
 {
     public const string Route = "/events/create";
     
+    public required string PictureUrl { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required DateTime StartDate { get; set; }

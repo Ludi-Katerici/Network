@@ -19,7 +19,7 @@ public class LoginFormInputModelValidator : AbstractValidator<LoginFormInputMode
             .NotEmpty()
             .WithMessage("Моля, въведете имейл адрес.")
             .EmailAddress()
-            .WithMessage("Моля, въведете валиден имейл адрес.");
+            .WithMessage("Имейд адресът е невалиден.");
 
         this.RuleFor(x => x.Password)
             .NotEmpty()

@@ -20,7 +20,7 @@ public class GetAllEventsEndpoint : Endpoint<GetAllEventsRequest, GetAllEventsRe
         var events = await this.DataContext.Events.Select(x => new GetAllEventsResponseModel.EventModel
         {
             Id = x.Id,
-            ImageUrl = "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcSHcaIGtAL8YQy1NEqScVdwj0ILcyFwC1mQqT6_v3Q_q_XGO-W3xVj92r-BbcEhDSoM8f3a3mfik4zEjdc",
+            ImageUrl = x.ProfilePicture,
             Title = x.Title,
             Region = x.Region,
             City = x.City,

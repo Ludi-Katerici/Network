@@ -7,11 +7,13 @@
 @using Contracts.Endpoints.CreateEvent
 @using FrontEnd.Infrastructure.UtilityMethods
 @using System.Collections.ObjectModel
+@using FrontEnd.AzureServices
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 @inject CreateEventFormInputValidator Validator
 @inject IEventsApiService EventsService
 @inject IJSRuntime JsRuntime
+@inject IAzureStorage AzureStorage
 
 <AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
@@ -82,13 +84,17 @@
             <InputTextArea @bind-Value="FormInputModel.Description" rows="3" class="resize-none rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
         </div>
 
-        
+
         <button type="button" class="bg-secondary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center" @onclick="@OpenCategoriesModal">
             @{
                 var categoriesCount = Categories.Count(x => x.IsSelected);
                 string text = categoriesCount > 0 ? $"Избрани ({categoriesCount})" : "Избери категории";
             }
             <span>@text</span>
+        </button>
+
+        <button type="button" class="bg-secondary w-1/4 mx-auto rounded-lg text-white p-1 text-xl pb-2 text-center align-middle items-center" @onclick="@OnOpenPictureModal">
+            <span>Избери снимка</span>
         </button>
 
         <button type="submit" @onclick="OnSubmit" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
@@ -98,10 +104,28 @@
 </div>
 
 @code {
+
     [CascadingParameter]
     public IModalService Modal { get; set; }
 
     private void OpenCategoriesModal() => this.Modal.Show<MultipleListModal>((nameof(MultipleListModal.Items), Categories)).Result.ContinueWith(_ => this.StateHasChanged());
+
+    InputPictureModel profilePicture;
+
+    async Task OnOpenPictureModal()
+    {
+        await this.Modal.Show<ImageUploadModal>().Result.ContinueWith(x => {
+            if (x.Result is
+                {
+                    Confirmed: true,
+                    Data: not null
+                })
+            {
+                var modal = (InputPictureModel) x.Result.Data;
+                this.profilePicture = modal;
+            }
+        });
+    }
 
     private List<SelectableItem<string>> Categories = new()
     {
@@ -127,7 +151,14 @@
         this.FormInputModel.City = City;
         this.FormInputModel.Region = Region;
         this.FormInputModel.Categories = Categories.Where(x => x.IsSelected).Select(x => x.Value).ToList();
-        
+
+        if (this.profilePicture is null || (string.IsNullOrWhiteSpace(this.profilePicture.Name) is false && this.profilePicture.Stream.Length > 0) is false)
+        {
+            isLoading = false;
+            await this.JsRuntime.ToastError("Моля качете снимка!");
+            return;
+        }
+
         var isValid = await Validator.ValidateFormModelAsync(FormInputModel, FormContext, ValidationMessageStore);
         if (!isValid)
         {
@@ -135,17 +166,27 @@
             return;
         }
         
-        var response = await EventsService.CreateEvent(new CreateEventRequest
+        var blobDto = await AzureStorage.UploadAsync(this.profilePicture.Stream, this.profilePicture.Name);
+
+        if (blobDto.Error)
         {
-            Name = this.FormInputModel.Name,
-            Description = this.FormInputModel.Description,
-            StartDate = this.FormInputModel.StartTime,
-            Region = this.FormInputModel.Region,
-            City = this.FormInputModel.City,
-            Address = this.FormInputModel.Address,
-            Categories = this.FormInputModel.Categories
-        });
-        
+            await this.JsRuntime.ToastError("Възникна грешка при качването на профилната снимка!");
+            return;
+        }
+
+        var response = await EventsService.CreateEvent(
+            new CreateEventRequest
+            {
+                Name = this.FormInputModel.Name,
+                Description = this.FormInputModel.Description,
+                StartDate = this.FormInputModel.StartTime,
+                Region = this.FormInputModel.Region,
+                City = this.FormInputModel.City,
+                Address = this.FormInputModel.Address,
+                Categories = this.FormInputModel.Categories,
+                PictureUrl = blobDto.Blob.Uri!,
+            });
+
         if (response.IsSuccessStatusCode)
         {
             isLoading = false;
@@ -167,13 +208,13 @@
 
     static ReadOnlyDictionary<string, string> requestMap = new Dictionary<string, string>()
     {
-        {nameof(FormInputModel.Name), nameof(CreateEventRequest.Name)},
-        {nameof(FormInputModel.Description), nameof(CreateEventRequest.Description)},
-        {nameof(FormInputModel.StartTime), nameof(CreateEventRequest.StartDate)},
-        {nameof(FormInputModel.Region), nameof(CreateEventRequest.Region)},
-        {nameof(FormInputModel.City), nameof(CreateEventRequest.City)},
-        {nameof(FormInputModel.Address), nameof(CreateEventRequest.Address)},
-        {nameof(FormInputModel.Categories), nameof(CreateEventRequest.Categories)}
+        { nameof(FormInputModel.Name), nameof(CreateEventRequest.Name) },
+        { nameof(FormInputModel.Description), nameof(CreateEventRequest.Description) },
+        { nameof(FormInputModel.StartTime), nameof(CreateEventRequest.StartDate) },
+        { nameof(FormInputModel.Region), nameof(CreateEventRequest.Region) },
+        { nameof(FormInputModel.City), nameof(CreateEventRequest.City) },
+        { nameof(FormInputModel.Address), nameof(CreateEventRequest.Address) },
+        { nameof(FormInputModel.Categories), nameof(CreateEventRequest.Categories) }
     }.AsReadOnly();
 
     private bool isLoading;

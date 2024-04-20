@@ -30,6 +30,7 @@ internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
     private async Task<IdentityUser> CreateUser(RegisterUserRequest req, CancellationToken ct)
     {
         var user = new IdentityUser(
+            profilePictureUrl: req.ProfilePictureUrl,
             name: req.Name,
             family: req.Family,
             email: req.Email,

@@ -7,6 +7,7 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
 {
     private HashSet<LoginInfo> logins = [];
     public IdentityUser(
+        string profilePictureUrl,
         string name,
         string family,
         string email,
@@ -20,6 +21,7 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
         string searchings,
         string additionalInformation) : base(Guid.NewGuid())
     {
+        this.ProfilePictureUrl = profilePictureUrl;
         this.Name = name;
         this.Family = family;
         this.Email = email.ToUpper();
@@ -35,6 +37,7 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
         this.AdditionalInformation = additionalInformation;
     }
 
+    public string ProfilePictureUrl { get; set; }
     public string Name { get; set; }
     public string Family { get; set; }
 

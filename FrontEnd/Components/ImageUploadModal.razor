@@ -1,0 +1,55 @@
+﻿@using FrontEnd.AzureServices
+@using FrontEnd.Infrastructure
+@inject IAzureStorage AzureStorage
+
+<div class="flex flex-col gap-4">
+    <div class="w-full flex flex-col justify-center items-center gap-4 max-h-[20rem]">
+        <div class="items-center align-middle max-h-[20rem] mx-auto">
+            <InputFile OnChange="OnInputFileChange"></InputFile>
+        </div>
+
+        @if (imageBase64 != null)
+        {
+            <img class="object-scale-down w-full h-full flex border" src="@($"data:image/jpeg;base64,{imageBase64}")" alt="Uploaded Image"/>
+        }
+    </div>
+
+    <button type="button" class="bg-secondary w-1/2 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center" @onclick="@Confirm">
+        <span>Запази снимка</span>
+    </button>
+
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+
+    private string imageBase64;
+    private InputPictureModel inputPictureModel;
+
+    async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var browserFile = e.File;
+        imageBase64 = await ConvertToBase64(browserFile);
+
+        var stream = browserFile.OpenReadStream(long.MaxValue);
+        var fileName = browserFile.Name;
+        this.inputPictureModel = new InputPictureModel
+        {
+            Name = fileName,
+            Stream = stream
+        };
+    }
+
+    private async Task<string> ConvertToBase64(IBrowserFile file)
+    {
+        var memoryStream = new MemoryStream();
+        await file.OpenReadStream().CopyToAsync(memoryStream);
+        var bytes = memoryStream.ToArray();
+        return Convert.ToBase64String(bytes);
+    }
+
+    async Task Confirm()
+    {
+        await ModalInstance.CloseAsync(ModalResult.Ok(this.inputPictureModel));
+    }
+}

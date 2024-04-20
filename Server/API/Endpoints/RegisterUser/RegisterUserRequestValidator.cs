@@ -15,6 +15,10 @@ public class RegisterUserRequestValidator : Validator<RegisterUserRequest>
 {
     public RegisterUserRequestValidator()
     {
+        this.RuleFor(x => x.ProfilePictureUrl)
+            .NotEmpty()
+            .WithMessage("Моля въведете профилна снимка.");
+        
         this.RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Моля въведете име.");
@@ -35,7 +39,7 @@ public class RegisterUserRequestValidator : Validator<RegisterUserRequest>
             .NotEmpty()
             .WithMessage("Моля въведете имейл.")
             .EmailAddress()
-            .WithMessage("Моля въведете валиден имейл.")
+            .WithMessage("Имейла е невалиден.")
             .MustAsync(async (email, token) => {
                 if (string.IsNullOrWhiteSpace(email))
                 {

@@ -1,47 +1,54 @@
-﻿using System.Text.Json;
-
-namespace Contracts;
+﻿namespace Contracts;
 
 public sealed class RegionsService
 {
-    public static List<Region> RegionsList { get; set; }
+    public static List<Region> Regions = new();
 
     static RegionsService()
     {
-        RegionsList = new List<Region>();
-        
-        string jsonString = new HttpClient().GetStringAsync("https://raw.githubusercontent.com/Kostadin/Places-in-Bulgaria/master/Places-in-Bulgaria.json").GetAwaiter().GetResult();
-        var rootObject = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, Location>>>>(jsonString);
-        foreach (var region in rootObject)
+        var citiesByRegion = new Dictionary<string, List<string>>();
+        InitializeCitiesByRegion(citiesByRegion);
+
+        foreach (var (regionName, cities) in citiesByRegion)
         {
-            var regionDto = new Region
+            Regions.Add(new Region
             {
-                RegionName = region.Key,
-                Cities = new List<string>()
-            };
-            foreach (var city in region.Value)
-            {
-                foreach (var info in city.Value)
-                {
-                    if (info.Value.type == "гр.")
-                    {
-                        regionDto.Cities.Add(info.Value.name);
-                    }
-                }
-            }
-            RegionsList.Add(regionDto);
+                RegionName = regionName,
+                Cities = cities
+            });
         }
     }
 
-    private class Location
+    public static void InitializeCitiesByRegion(Dictionary<string, List<string>> citiesByRegion)
     {
-        public string name { get; set; }
-        public string type { get; set; }
-        public string town_hall { get; set; }
-        public string phone_code { get; set; }
-        public double latitude { get; set; }
-        public double longitude { get; set; }
-        public List<string> post_codes { get; set; }
+        citiesByRegion["София"] = ["София", "Бухово", "Нови Искър", "Банкя"];
+        citiesByRegion["София област"] = ["Божурище", "Ботевград", "Годеч", "Долна баня", "Драгоман", "Елин Пелин", "Етрополе", "Златица", "Ихтиман", "Копривщица", "Костенец", "Момин проход", "Костинброд", "Пирдоп", "Правец", "Самоков", "Своге", "Сливница"];
+        citiesByRegion["Благоевград"] = ["Благоевград", "Белица", "Банско", "Гоце Делчев", "Кресна", "Петрич", "Разлог", "Мелник", "Сандански", "Симитли", "Хаджидимово", "Якоруда"];
+        citiesByRegion["Бургас"] = ["Бургас", "Айтос", "Българово", "Камено", "Карнобат", "Малко Търново", "Несебър", "Обзор", "Каблешково", "Поморие", "Приморско", "Созопол", "Средец", "Сунгурларе", "Ахтопол", "Царево"];
+        citiesByRegion["Варна"] = ["Варна", "Бяла", "Белослав", "Вълчи дол", "Девня", "Долни чифлик", "Дългопол", "Провадия", "Суворово"];
+        citiesByRegion["Велико Търново"] = ["Велико Търново", "Дебелец", "Килифарево", "Горна Оряховица", "Долна Оряховица", "Елена", "Златарица", "Лясковец", "Бяла черква", "Павликени", "Полски Тръмбеш", "Свищов", "Стражица", "Сухиндол"];
+        citiesByRegion["Видин"] = ["Видин", "Брегово", "Белоградчик", "Дунавци", "Грамада", "Димово", "Кула"];
+        citiesByRegion["Враца"] = ["Враца", "Бяла Слатина", "Козлодуй", "Криводол", "Мездра", "Мизия", "Оряхово", "Роман"];
+        citiesByRegion["Габрово"] = ["Габрово", "Дряново", "Севлиево", "Плачковци", "Трявна"];
+        citiesByRegion["Добрич"] = ["Добрич", "Генерал Тошево", "Балчик", "Каварна", "Тервел", "Шабла"];
+        citiesByRegion["Кърджали"] = ["Кърджали", "Джебел", "Крумовград", "Ардино", "Момчилград"];
+        citiesByRegion["Кюстендил"] = ["Кюстендил", "Бобошево", "Дупница", "Кочериново", "Бобовдол", "Рила", "Сапарева баня"];
+        citiesByRegion["Ловеч"] = ["Ловеч", "Летница", "Априлци", "Луковит", "Тетевен", "Троян", "Угърчин", "Ябланица"];
+        citiesByRegion["Монтана"] = ["Монтана", "Бойчиновци", "Брусарци", "Вълчедръм", "Вършец", "Лом", "Берковица", "Чипровци"];
+        citiesByRegion["Пазарджик"] = ["Пазарджик", "Белово", "Брацигово", "Велинград", "Батак", "Панагюрище", "Пещера", "Ракитово", "Септември", "Стрелча"];
+        citiesByRegion["Перник"] = ["Перник", "Земен", "Батановци", "Брезник", "Радомир", "Трън"];
+        citiesByRegion["Плевен"] = ["Плевен", "Гулянци", "Долна Митрополия", "Тръстеник", "Долни Дъбник", "Искър", "Кнежа", "Левски", "Никопол", "Белене", "Славяново", "Пордим", "Койнаре", "Червен бряг"];
+        citiesByRegion["Пловдив"] = ["Пловдив", "Брезово", "Калофер", "Карлово", "Клисура", "Сопот", "Кричим", "Лъки", "Перущица", "Асеновград", "Първомай", "Раковски", "Садово", "Стамболийски", "Съединение", "Хисаря"];
+        citiesByRegion["Разград"] = ["Разград", "Исперих", "Кубрат", "Лозница", "Завет", "Цар Калоян"];
+        citiesByRegion["Русе"] = ["Русе", "Бяла", "Ветово", "Сеново", "Две могили", "Борово"];
+        citiesByRegion["Силистра"] = ["Силистра", "Главиница", "Дулово", "Алфатар", "Тутракан"];
+        citiesByRegion["Сливен"] = ["Сливен", "Нова Загора", "Кермен", "Котел", "Твърдица", "Шивачево"];
+        citiesByRegion["Смолян"] = ["Смолян", "Доспат", "Златоград", "Мадан", "Неделино", "Рудозем", "Девин", "Чепеларе"];
+        citiesByRegion["Стара Загора"] = ["Стара Загора", "Гълъбово", "Казанлък", "Шипка", "Мъглиж", "Николаево", "Павел баня", "Раднево", "Гурково", "Чирпан"];
+        citiesByRegion["Търговище"] = ["Търговище", "Омуртаг", "Опака", "Попово", "Антоново"];
+        citiesByRegion["Хасково"] = ["Хасково", "Меричлери", "Ивайловград", "Любимец", "Маджарово", "Свиленград", "Симеоновград", "Тополовград", "Харманли", "Димитровград"];
+        citiesByRegion["Шумен"] = ["Шумен", "Върбица", "Каолиново", "Каспичан", "Плиска", "Нови пазар", "Смядово", "Велики Преслав"];
+        citiesByRegion["Ямбол"] = ["Ямбол", "Елхово", "Стралджа", "Болярово"];
     }
 }
 

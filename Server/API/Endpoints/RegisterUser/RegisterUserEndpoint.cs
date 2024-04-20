@@ -12,16 +12,12 @@ internal sealed class RegisterUserEndpoint : Endpoint<RegisterUserRequest>
     public IPasswordHasher<IdentityUser> PasswordHasher { get; set; }
     public override void Configure()
     {
-        this.DontThrowIfValidationFails();
-        this.DontCatchExceptions();
         this.Post(RegisterUserRequest.Route);
         this.AllowAnonymous();
     }
 
     public override async Task HandleAsync(RegisterUserRequest req, CancellationToken ct)
     {
-        this.ThrowIfAnyErrors();
-
         var user = await this.CreateUser(req, ct);
 
         await this.SendOkAsync(

@@ -3,9 +3,13 @@
 @using Contracts
 @using System.ComponentModel.DataAnnotations
 @using System.Text.Json
+@using Contracts.Endpoints.RegisterUser
 @using FluentValidation
+@using System.Collections.ObjectModel
 @inject IJSRuntime JsRuntime
 @inject RegisterFormInputModelValidator Validator
+@inject IIdentityApiService IdentityApiService
+@inject NavigationManager NavigationManager
 
 <div class="bg-white w-full flex flex-col h-full">
     <EditForm EditContext="FormContext" class="w-full flex flex-col gap-2 mt-16">
@@ -264,12 +268,59 @@
 
         await Task.Delay(1000);
 
-        Console.WriteLine(JsonSerializer.Serialize(this.FormInputModel));
-        Console.WriteLine(City);
-        Console.WriteLine(Region);
+        await CreateUser();
         this.loading = false;
-        await this.JsRuntime.ToastSuccess("Успешно се регистрирахте!");
     }
+
+    async Task CreateUser()
+    {
+        var user = new RegisterUserRequest
+        {
+            Name = FormInputModel.Name,
+            Family = FormInputModel.Family,
+            Email = FormInputModel.Email,
+            PhoneNumber = FormInputModel.PhoneNumber,
+            Password = FormInputModel.Password,
+            Region = Region,
+            City = City,
+            Education = FormInputModel.Education,
+            Work = FormInputModel.Work,
+            ProfessionalExperience = FormInputModel.ProfessionalExperience,
+            Interests = FormInputModel.Interests,
+            Searchings = FormInputModel.Searchings,
+            AdditionalInformation = FormInputModel.AdditionalInformation
+        };
+
+        var response = await IdentityApiService.RegisterUser(user);
+        if (response.IsSuccessStatusCode)
+        {
+            this.JsRuntime.ToastSuccess("Успешно се регистрирахте!");
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+        
+        var errorResponse = await response.Error.GetErrorResponse();
+        errorResponse.ConstructValidationMessages<RegisterFormInputModel>(FormContext, ValidationMessageStore, requestMap);
+        this.Step--;
+        this.JsRuntime.ToastError("Възникна грешка при регистрацията!");
+    }
+
+    static ReadOnlyDictionary<string, string> requestMap = new Dictionary<string, string>()
+    {
+        {nameof(FormInputModel.Name), nameof(RegisterUserRequest.Name)},
+        {nameof(FormInputModel.Family), nameof(RegisterUserRequest.Family)},
+        {nameof(FormInputModel.Email), nameof(RegisterUserRequest.Email)},
+        {nameof(FormInputModel.PhoneNumber), nameof(RegisterUserRequest.PhoneNumber)},
+        {nameof(FormInputModel.Password), nameof(RegisterUserRequest.Password)},
+        {nameof(FormInputModel.Education), nameof(RegisterUserRequest.Education)},
+        {nameof(FormInputModel.Work), nameof(RegisterUserRequest.Work)},
+        {nameof(FormInputModel.ProfessionalExperience), nameof(RegisterUserRequest.ProfessionalExperience)},
+        {nameof(FormInputModel.Interests), nameof(RegisterUserRequest.Interests)},
+        {nameof(FormInputModel.Searchings), nameof(RegisterUserRequest.Searchings)},
+        {nameof(FormInputModel.AdditionalInformation), nameof(RegisterUserRequest.AdditionalInformation)},
+        {nameof(Region), nameof(RegisterUserRequest.Region)},
+        {nameof(City), nameof(RegisterUserRequest.City)},
+    }.AsReadOnly();
 
     int Step;
     bool loading;

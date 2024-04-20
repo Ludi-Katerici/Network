@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using System.Text.Json;
+using Contracts;
 using Contracts.Endpoints.RegisterUser;
 using Contracts.Exceptions.Email;
 using Contracts.Exceptions.Password;
@@ -10,7 +11,7 @@ using Server.Persistence;
 
 namespace Server.API.Endpoints.RegisterUser;
 
-internal sealed class RegisterUserRequestValidator : Validator<RegisterUserRequest>
+public class RegisterUserRequestValidator : Validator<RegisterUserRequest>
 {
     public RegisterUserRequestValidator()
     {
@@ -44,6 +45,8 @@ internal sealed class RegisterUserRequestValidator : Validator<RegisterUserReque
         this.RuleFor(x => x.PhoneNumber)
             .NotEmpty()
             .WithMessage("Моля въведете телефонен номер.")
+            .Must(x => x != "0876985878")
+            .WithMessage("Този телефонен номер вече се използва.")
             .Must(phoneNumber => {
                 if (phoneNumber.Contains("+359"))
                 {
@@ -74,7 +77,16 @@ internal sealed class RegisterUserRequestValidator : Validator<RegisterUserReque
             .NotEmpty()
             .WithMessage("Моля въведете град.")
             .Must((dto, city) => {
-                return !RegionsService.Regions.Any(x => x.RegionName == dto.Region && x.Cities.Contains(city));
+                Console.WriteLine(JsonSerializer.Serialize(dto));
+                Console.WriteLine(JsonSerializer.Serialize(RegionsService.Regions));
+                var region = RegionsService.Regions.FirstOrDefault(x => x.RegionName == dto.Region);
+                
+                if (region is null)
+                {
+                    return false;
+                }
+                
+                return region.Cities.Any(x => x == city);
             })
             .WithMessage("Не съществува такъв град в тази област.");
             

@@ -24,7 +24,7 @@ public sealed class RegisterFormInputModel
 
 public class RegisterFormInputModelValidator : AbstractValidator<RegisterFormInputModel>
 {
-    public RegisterFormInputModelValidator()
+    public RegisterFormInputModelValidator(IIdentityApiService identityApiService)
     {
         this.RuleFor(x => x.Name)
             .NotEmpty()
@@ -38,7 +38,17 @@ public class RegisterFormInputModelValidator : AbstractValidator<RegisterFormInp
             .NotEmpty()
             .WithMessage("Моля, въведете имейл адрес.")
             .EmailAddress()
-            .WithMessage("Моля, въведете валиден имейл адрес.");
+            .WithMessage("Моля, въведете валиден имейл адрес.")
+            .MustAsync(async (x, _) => {
+                if (string.IsNullOrWhiteSpace(x))
+                    return true;
+
+                var result = await identityApiService.IsEmailAvailable(x);
+                
+                return result.Content;
+
+            })
+            .WithMessage("Този имейл адрес вече се използва.");
 
         this.RuleFor(x => x.PhoneNumber)
             .NotEmpty()

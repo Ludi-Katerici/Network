@@ -28,6 +28,11 @@ internal sealed class RegisterUserRequestValidator : Validator<RegisterUserReque
             .EmailAddress()
             .WithMessage("Моля въведете валиден имейл.")
             .MustAsync(async (email, token) => {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    return true;
+                }
+                
                 var emailToUpperCase = email.ToUpper();
                 var isEmailTaken = await dataContext.Users.AnyAsync(x => x.Email == emailToUpperCase, token);
                 

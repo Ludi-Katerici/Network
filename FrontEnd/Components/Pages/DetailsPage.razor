@@ -56,6 +56,11 @@
 
                 @foreach (var attendee in EventDetails.Attendees)
                 {
+                    @if (attendee.Id == this.UserId)
+                    {
+                        continue;
+                    }
+                    
                     <div class="bg-secondary px-4 py-4 rounded-md w-fit flex flex-col gap-4">
                         <div class="flex gap-4">
                             <span>@attendee.FullName</span>
@@ -102,6 +107,8 @@
 
     [Parameter]
     public Guid Id { get; set; }
+    
+    Guid UserId { get; set; }
 
     GetEventDetailsResponse? EventDetails;
 
@@ -130,13 +137,13 @@
     {
         var response = await EventsApiService.GetEventDetails(Id);
         var authDetails = await this.AuthService.GetAuthStateDetails();
-        var userId = authDetails!.UserId;
+        this.UserId = Guid.Parse(authDetails!.UserId);
 
         if (response.IsSuccessStatusCode)
         {
             this.EventDetails = response.Content;
 
-            if (this.EventDetails.Attendees.Any(x => x.Id == Guid.Parse(userId)))
+            if (this.EventDetails.Attendees.Any(x => x.Id == this.UserId))
             {
                 disableSignUpButton = true;
             }

@@ -14,5 +14,6 @@ public class GetAllEventsResponseModel
         public required List<string> Categories { get; set; }
         public required string Description { get; set; }
         public required string CreatorFullName { get; set; }
+        public required DateTime StartDate { get; set; }
     }
 }

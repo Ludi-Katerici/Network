@@ -13,6 +13,7 @@
     <div class="flex gap-4 w-full justify-center items-center mt-4">
         <button @onclick="@OpenCategoriesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
         <button @onclick="@OpenRegions" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
+        <button @onclick="@OpenSelectDatesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери Дати</button>
     </div>
 
     <div class="w-full gap-4 h-fit flex mt-6 mb-6">
@@ -23,19 +24,18 @@
 
                     @foreach (var eventModel in groupEvents
                                   .Where(x => {
-                                      Console.WriteLine("asd");
                                       if (preferredCategories.Count == 0)
                                           return true;
                                       
                                       return x.Categories.Any(y => preferredCategories.Contains(y));
                                   })
                                   .Where(x => {
-                                        Console.WriteLine("asd1");
                                         if (preferredRegions.Count == 0)
                                             return true;
                                         
                                         return preferredRegions.Contains(x.Region);
-                                  }))
+                                  })
+                                  .Where(x => x.StartDate.Date >= selectedDates.StartDate.Date && x.StartDate.Date <= selectedDates.EndDate.Date))
                     {
                         <Card Model="eventModel" NavigationManager="NavigationManager"/>
                     }
@@ -52,6 +52,29 @@
 
     List<string> preferredCategories = [];
     List<string> preferredRegions = [];
+
+    SelectDateTimeModal.Dates selectedDates = new() {
+        StartDate = DateTime.Now,
+        EndDate = DateTime.Now
+    };
+    
+    private void OpenSelectDatesModal() => this.Modal.Show<SelectDateTimeModal>(
+        (nameof(SelectDateTimeModal.StartDate), MinDate),
+        (nameof(SelectDateTimeModal.EndDate), MaxDate)
+        ).Result.ContinueWith(x => {
+        if (x.Result is
+            {
+                Confirmed: true,
+                Data: not null
+            })
+        {
+            var modal = (SelectDateTimeModal.Dates) x.Result.Data;
+            
+            selectedDates = modal;
+        }
+        
+        this.StateHasChanged();
+    });
 
     private void OpenCategoriesModal() => this.Modal.Show<MultipleListModal>((nameof(MultipleListModal.Items), Categories)).Result.ContinueWith(x => {
         if (x.Result is
@@ -88,6 +111,10 @@
 
     private List<SelectableItem<string>> Categories = [];
     private List<SelectableItem<string>> Regions = [];
+    
+    public DateTime MinDate { get; set; } = DateTime.Now;
+    public DateTime MaxDate { get; set; } = DateTime.Now;
+    
 
     public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = [[]];
     public List<List<GetAllEventsResponseModel.EventModel>> RealEvents { get; set; } = [[]];
@@ -109,6 +136,20 @@
                 }
 
                 lastList.Add(@event);
+            }
+            
+            var flatted = Events.SelectMany(x => x).ToList();
+            
+            if (flatted.Count != 0)
+            {
+                MinDate = flatted.Min(x => x.StartDate);
+                MaxDate = flatted.Max(x => x.StartDate);
+
+                this.selectedDates = new SelectDateTimeModal.Dates
+                {
+                    StartDate = MinDate,
+                    EndDate = MaxDate
+                };
             }
 
             RealEvents = Events.ToList();

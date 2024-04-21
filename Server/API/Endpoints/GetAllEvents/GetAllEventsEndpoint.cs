@@ -27,6 +27,7 @@ public class GetAllEventsEndpoint : Endpoint<GetAllEventsRequest, GetAllEventsRe
             Categories = x.Categories,
             Description = x.Description,
             CreatorFullName = $"{x.Creator.Name} {x.Creator.Family}",
+            StartDate = x.StartDate
         }).ToListAsync();
 
         await this.SendAsync(

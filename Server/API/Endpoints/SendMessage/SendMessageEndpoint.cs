@@ -40,11 +40,17 @@ public class SendMessageEndpoint : Endpoint<SendMessageRequest>
         
         var message = new Message
         {
+            SenderId = userId,
             Content = req.Content,
             SenderName = senderName,
             ProfilePicture = profilePicture,
             CreatedOn = this.Clock.CurrentDateTime().DateTime
         };
+
+        if (friend.Messages is null)
+        {
+            friend.Messages = new List<Message>();
+        }
         
         friend.Messages.Add(message);
         

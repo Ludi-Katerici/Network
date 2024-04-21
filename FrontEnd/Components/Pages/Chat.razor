@@ -3,7 +3,9 @@
 @using Contracts
 @using Contracts.Endpoints.GetChatMessages
 @using Contracts.Endpoints.GetChats
+@using Contracts.Endpoints.SendMessage
 @using FrontEnd.Infrastructure.UtilityMethods
+@using System.Text.Json
 @inject IAuthService AuthService
 @inject IFriendsApiService FriendsApiService
 @inject NavigationManager NavigationManager
@@ -13,17 +15,19 @@
 <div class="flex w-full bg-slate-300 h-full mx-auto bg-slate-300 shadow-lg rounded-lg rounded-3xl">
     <!-- end header -->
     <!-- Chatting -->
-    <div class="flex bg-slate-300 max-h-[45rem] min-h-[45rem] flex-row justify-between my-auto border mx-4">
+    <div class="flex bg-slate-300 max-h-[45rem] min-h-[45rem] flex-row justify-between my-auto border mx-4 w-full">
         <!-- chat list -->
         <div class="flex flex-col w-2/5 overflow-y-auto border-r">
             <!-- user list -->
             @foreach (var user in this.Chats)
             {
-                <div class="flex flex-row py-4 px-2 justify-center items-center border-b">
+                string backgroundColor = user.FriendId == this.FriendId ? "bg-blue-300" : "bg-[#b1d3e3]";
+
+                <div class="cursor-pointer flex flex-row py-4 px-2 justify-center items-center border-b @backgroundColor" @onclick='async () => await this.SelectNewChat(user.FriendId)'>
                     <div class="w-1/4">
                         <img
                             src="@user.ProfilePictureUrl"
-                            class="object-cover h-12 w-12 rounded-full border"
+                            class="object-cover h-16 w-16 rounded-full border"
                             alt=""/>
                     </div>
                     <div class="w-full flex flex-col">
@@ -49,40 +53,63 @@
         <div class="w-full max-h-fit overflow-y-auto px-5 flex flex-col justify-between">
 
             <div class="flex flex-col mt-5 gap-4">
-                <div class="flex gap-1">
-                    <div
-                        class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white justify-end ml-auto my-auto">
-                        Welcome to group everyone !
-                    </div>
-                    <img
-                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                        class="object-cover h-8 w-8 rounded-full my-auto"
-                        alt=""/>
-                </div>
-                <div class="flex gap-1">
-                    <img
-                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                        class="object-cover h-8 w-8 rounded-full my-auto"
-                        alt=""/>
-                    <div
-                        class="bg-white ml-2 py-3 px-4 text-black rounded-br-3xl rounded-tr-3xl rounded-tl-xl justify-end ml-auto my-auto">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                        at praesentium, aut ullam delectus odio error sit rem. Architecto
-                        nulla doloribus laborum illo rem enim dolor odio saepe,
-                        consequatur quas?
-                    </div>
-
-                </div>
-
+                @if (this.Messages.Any())
+                {
+                    @foreach (var message in this.Messages)
+                    {
+                        @if (message.Id == this.UserId)
+                        {
+                            <div class="flex flex-col gap-1 justify-end ml-auto">
+                                <div class="flex gap-1 ml-auto">
+                                    <div
+                                        class="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white my-auto">
+                                        @message.Content
+                                    </div>
+                                    <img
+                                        src="@message.ProfilePicture"
+                                        class="object-cover h-12 w-12 rounded-full my-auto border"
+                                        alt=""/>
+                                </div>
+                                <div class="flex text-sm">
+                                    <span>@message.CreatedAt.ToString("g")</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="flex flex-col justify-start gap-1 mr-auto">
+                                <div class="flex gap-1 mr-auto">
+                                    <img
+                                        src="@message.ProfilePicture"
+                                        class="object-cover h-12 w-12 rounded-full my-auto border"
+                                        alt=""/>
+                                    <div
+                                        class="bg-white ml-2 py-3 px-4 text-black rounded-br-3xl rounded-tr-3xl rounded-tl-xl justify-end my-auto">
+                                        @message.Content
+                                    </div>
+                                </div>
+                                <div class="flex text-sm">
+                                    <span>@message.CreatedAt.ToString("g")</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+                else
+                {
+                    <div class="text-center font-semibold text-lg text-dark">Няма съобщения. Започни разговор</div>
+                }
             </div>
 
             <div class="py-5 flex gap-2">
                 <input
+                    @oninput="e => this.MessageText = e.Value?.ToString()!"
+                    @bind-value="this.MessageText"
                     class="w-full bg-gray-300 py-5 px-3 rounded-xl border"
                     type="text"
                     placeholder="Напиши нещо..."/>
 
-                <button class="bg-primary rounded-xl text-white px-2 my-auto py-2">Send</button>
+                <button class="bg-blue-400 rounded-xl text-white px-2 my-auto py-2" @onclick="OnSendMessage">Send</button>
             </div>
 
         </div>
@@ -93,15 +120,29 @@
 @code {
     Guid UserId;
     Guid? FriendId;
-    List<GetChatsResponse.ChatModel> Chats;
-    List<GetChatMessagesResponse.ChatMessage> Messages;
+    List<GetChatsResponse.ChatModel> Chats = [];
+    List<GetChatMessagesResponse.ChatMessage> Messages = [];
+    string MessageText;
 
     protected override async Task OnInitializedAsync()
     {
         var authDetails = await AuthService.GetAuthStateDetails();
         this.UserId = Guid.Parse(authDetails.UserId);
+        Console.WriteLine(this.UserId);
 
+        await RefreshData();
+    }
+
+    async Task RefreshData()
+    {
         await GetChats();
+        await GetMessages();
+    }
+
+    async Task SelectNewChat(Guid friendId)
+    {
+        this.FriendId = friendId;
+        await RefreshData();
     }
 
     async Task GetChats()
@@ -115,7 +156,10 @@
             if (FriendId.HasValue is false && Chats.Any())
             {
                 FriendId = Chats.First().FriendId;
+                Console.WriteLine(FriendId);
             }
+
+            Console.WriteLine(JsonSerializer.Serialize(Chats));
 
             return;
         }
@@ -138,6 +182,31 @@
                 FriendId = this.FriendId.Value
             });
 
-        this.Messages = messages.IsSuccessStatusCode ? messages.Content.Messages : [];
+        this.Messages = messages.IsSuccessStatusCode ? messages.Content.Messages.OrderBy(x => x.CreatedAt).ToList() : [];
+    }
+
+    async Task OnSendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(this.MessageText) || this.FriendId.HasValue is false)
+        {
+            return;
+        }
+
+        var response = await FriendsApiService.SendMessageToFriend(
+            new SendMessageRequest
+            {
+                FriendId = this.FriendId.Value,
+                Content = this.MessageText
+            });
+
+        if (response.IsSuccessStatusCode)
+        {
+            this.MessageText = string.Empty;
+            await RefreshData();
+        }
+        else
+        {
+            await this.JsRuntime.ToastError("Грешка при изпращане на съобщението!");
+        }
     }
 }

@@ -36,6 +36,7 @@ public class GetChatMessagesRequest : Endpoint<GetChatsRequest, GetChatMessagesR
         
         var messages = friend.Messages.Select(x => new GetChatMessagesResponse.ChatMessage
         {
+            Id = x.SenderId,
             CreatedAt = x.CreatedOn.DateTime,
             Content = x.Content,
             SenderName = x.SenderName,

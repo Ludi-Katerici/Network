@@ -264,6 +264,9 @@ namespace Server.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
+                            b1.Property<Guid>("SenderId")
+                                .HasColumnType("uniqueidentifier");
+
                             b1.Property<string>("SenderName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");

@@ -21,6 +21,7 @@ public sealed class FriendRelationship : IAuditInformation
 
 public class Message : ValueObject
 {
+    public Guid SenderId { get; set; }
     public string ProfilePicture { get; set; }
     public string SenderName { get; set; }
     public string Content { get; set; }

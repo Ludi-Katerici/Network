@@ -45,6 +45,10 @@
                     {
                         <button disabled="disabled" type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-300 text-white mt-2">Вече си записан</button>
                     }
+                    else if (EventDetails.StartDate < DateTime.Now)
+                    {
+                        <button disabled="disabled" type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-red-300 text-white mt-2">Събитието вече е стартирало</button>
+                    }
                     else
                     {
                         <button type="button" class="text-lg text-white px-10 rounded-lg py-1 font-semibold bg-green-500 text-white mt-2" @onclick="OnSignUpClick">Запиши се</button>

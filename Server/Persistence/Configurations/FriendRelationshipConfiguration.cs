@@ -17,5 +17,11 @@ internal sealed class FriendRelationshipConfiguration : IEntityTypeConfiguration
             .WithMany(x => x.FriendRelationships)
             .HasForeignKey(x => x.SenderId)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        builder.OwnsMany(x => x.Messages, navigationBuilder => {
+            navigationBuilder.WithOwner();
+            
+            navigationBuilder.ToJson();
+        });
     }
 }

@@ -21,7 +21,7 @@ public class GetEventDetailsEndpoint : Endpoint<GetEventDetailsRequest, GetEvent
             .Select(x => new GetEventDetailsResponse
             {
                 Id = x.Id,
-                ImageUrl = "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcSHcaIGtAL8YQy1NEqScVdwj0ILcyFwC1mQqT6_v3Q_q_XGO-W3xVj92r-BbcEhDSoM8f3a3mfik4zEjdc",
+                ImageUrl = x.ProfilePicture,
                 Title = x.Title,
                 Categories = x.Categories,
                 Description = x.Description,

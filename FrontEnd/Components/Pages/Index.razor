@@ -9,7 +9,12 @@
 
 @inject IEventsApiService EventsApiService
 
-<div class="w-full h-full flex bg-[#B9C1C8]">
+<div class="w-full h-full flex flex-col bg-[#B9C1C8] w-ful">
+    <div class="flex gap-4 w-full justify-center items-center mt-4">
+        <button class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
+        <button class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
+    </div>
+
     <div class="w-full gap-4 h-fit flex mt-6 mb-6">
         <div class="flex flex-col w-full h-full gap-4 mx-auto items-center align-middle">
             @foreach (var groupEvents in Events)
@@ -17,7 +22,7 @@
                 <div class="mx-auto flex w-full h-full gap-4">
                     @foreach (var eventModel in groupEvents)
                     {
-                        <Card Model="eventModel" NavigationManager="NavigationManager" />
+                        <Card Model="eventModel" NavigationManager="NavigationManager"/>
                     }
                 </div>
             }
@@ -26,7 +31,7 @@
 </div>
 
 @code {
-    public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = new() { new List<GetAllEventsResponseModel.EventModel>() };
+    public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = [[]];
 
     protected override async Task OnInitializedAsync()
     {

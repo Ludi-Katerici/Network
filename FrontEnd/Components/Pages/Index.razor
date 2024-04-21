@@ -5,6 +5,7 @@
 @using System.Text.Json
 @using Contracts.Endpoints.GetAllEvents
 @inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
 
 @inject IEventsApiService EventsApiService
 
@@ -16,7 +17,7 @@
                 <div class="mx-auto flex w-full h-full gap-4">
                     @foreach (var eventModel in groupEvents)
                     {
-                        <Card Model="eventModel" />
+                        <Card Model="eventModel" NavigationManager="NavigationManager" />
                     }
                 </div>
             }

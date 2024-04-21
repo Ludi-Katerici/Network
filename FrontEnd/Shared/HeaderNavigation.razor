@@ -1,12 +1,25 @@
-﻿<div class="flex items-center justify-center gap-6">
-    <div class="cursor-pointer bg-primary rounded-full" @onclick="ToggleDropdown">
-        <div class="flex justify-center items-center p-4">
+﻿@inject NavigationManager NavigationManager
+
+<div class="flex items-center justify-center gap-6">
+    <div class="cursor-pointer flex gap-3">
+
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/chat")'>
+            <img class="h-6" src="./icons/chat.png" alt="Dots"/>
+        </div>
+
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/friend-requests")'>
+            <img class="h-6" src="./icons/friends.png" alt="Dots"/>
+        </div>
+
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick="ToggleDropdown">
             <img class="h-6" src="./icons/menuIcon.png" alt="Dots"/>
         </div>
     </div>
 </div>
 
 @code {
+
     [EditorRequired, Parameter]
     public EventCallback ToggleDropdown { get; set; }
+
 }

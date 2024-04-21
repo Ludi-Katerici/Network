@@ -1,6 +1,8 @@
 ﻿using Contracts.Endpoints.AcceptFriendRequest;
 using Contracts.Endpoints.DeleteFriendRequest;
 using Contracts.Endpoints.GetAllFriendRequests;
+using Contracts.Endpoints.GetChatMessages;
+using Contracts.Endpoints.GetChats;
 using Contracts.Endpoints.SendFriend;
 using Contracts.Endpoints.SendMessage;
 using Refit;
@@ -23,4 +25,10 @@ public interface IFriendsApiService
     
     [Post(SendMessageRequest.Route)]
     Task<IApiResponse> SendMessageToFriend([Body] SendMessageRequest request);
+    
+    [Get(GetChatsRequest.Route)]
+    Task<ApiResponse<GetChatsResponse>> GetAllChats();
+    
+    [Post(GetChatMessagesRequest.Route)]
+    Task<ApiResponse<GetChatMessagesResponse>> GetChatMessages([Body] GetChatMessagesRequest request);
 }

@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Contracts.Endpoints.CreateEvent;
+﻿using Contracts.Endpoints.CreateEvent;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 using Server.Common.API.Authorization;

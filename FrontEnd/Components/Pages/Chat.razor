@@ -1,4 +1,13 @@
 ﻿@page "/chat"
+@using FrontEnd.Infrastructure.Authentication
+@using Contracts
+@using Contracts.Endpoints.GetChatMessages
+@using Contracts.Endpoints.GetChats
+@using FrontEnd.Infrastructure.UtilityMethods
+@inject IAuthService AuthService
+@inject IFriendsApiService FriendsApiService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
 <!-- This is an example component -->
 <div class="flex w-full bg-slate-300 h-full mx-auto bg-slate-300 shadow-lg rounded-lg rounded-3xl">
@@ -7,82 +16,31 @@
     <div class="flex bg-slate-300 max-h-[45rem] min-h-[45rem] flex-row justify-between my-auto border mx-4">
         <!-- chat list -->
         <div class="flex flex-col w-2/5 overflow-y-auto border-r">
-            <!-- end search compt -->
             <!-- user list -->
-            <div
-                class="flex flex-row py-4 px-2 justify-center items-center border-b">
-                <div class="w-1/4">
-                    <img
-                        src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                        class="object-cover h-12 w-12 rounded-full"
-                        alt=""/>
+            @foreach (var user in this.Chats)
+            {
+                <div class="flex flex-row py-4 px-2 justify-center items-center border-b">
+                    <div class="w-1/4">
+                        <img
+                            src="@user.ProfilePictureUrl"
+                            class="object-cover h-12 w-12 rounded-full border"
+                            alt=""/>
+                    </div>
+                    <div class="w-full flex flex-col">
+                        <div class="text-lg font-semibold">@user.FullName</div>
+
+                        @if (string.IsNullOrWhiteSpace(user.LastMessageContent) && user.LastMessageDate is null)
+                        {
+                            <span class="text-gray-500">Няма съобщения. Започни разговор</span>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(user.LastMessageContent) && user.LastMessageDate.HasValue)
+                        {
+                            <span class="text-gray-500">@user.LastMessageContent (@user.LastMessageDate!.Value.ToString("g"))</span>
+                        }
+                    </div>
                 </div>
-                <div class="w-full">
-                    <div class="text-lg font-semibold">Luis1994</div>
-                    <span class="text-gray-500">Pick me at 9:00 Am</span>
-                </div>
-            </div>
-            <div class="flex flex-row py-4 px-2 items-center border-b">
-                <div class="w-1/4">
-                    <img
-                        src="https://source.unsplash.com/otT2199XwI8/600x600"
-                        class="object-cover h-12 w-12 rounded-full"
-                        alt=""/>
-                </div>
-                <div class="w-full">
-                    <div class="text-lg font-semibold">Everest Trip 2021</div>
-                    <span class="text-gray-500">Hi Sam, Welcome</span>
-                </div>
-            </div>
-            <div
-                class="flex flex-row py-4 px-2 items-center border-b">
-                <div class="w-1/4">
-                    <img
-                        src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
-                        class="object-cover h-12 w-12 rounded-full"
-                        alt=""/>
-                </div>
-                <div class="w-full">
-                    <div class="text-lg font-semibold">MERN Stack</div>
-                    <span class="text-gray-500">Lusi : Thanks Everyone</span>
-                </div>
-            </div>
-            <div class="flex flex-row py-4 px-2 items-center border-b">
-                <div class="w-1/4">
-                    <img
-                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                        class="object-cover h-12 w-12 rounded-full"
-                        alt=""/>
-                </div>
-                <div class="w-full">
-                    <div class="text-lg font-semibold">Javascript Indonesia</div>
-                    <span class="text-gray-500">Evan : some one can fix this</span>
-                </div>
-            </div>
-            <div class="flex flex-row py-4 px-2 items-center border-b">
-                <div class="w-1/4">
-                    <img
-                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                        class="object-cover h-12 w-12 rounded-full"
-                        alt=""/>
-                </div>
-                <div class="w-full">
-                    <div class="text-lg font-semibold">Javascript Indonesia</div>
-                    <span class="text-gray-500">Evan : some one can fix this</span>
-                </div>
-            </div>
-            <div class="flex flex-row py-4 px-2 items-center border-b">
-                <div class="w-1/4">
-                    <img
-                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                        class="object-cover h-12 w-12 rounded-full"
-                        alt=""/>
-                </div>
-                <div class="w-full">
-                    <div class="text-lg font-semibold">Javascript Indonesia</div>
-                    <span class="text-gray-500">Evan : some one can fix this</span>
-                </div>
-            </div>
+
+            }
             <!-- end user list -->
         </div>
         <!-- end chat list -->
@@ -122,7 +80,7 @@
                 <input
                     class="w-full bg-gray-300 py-5 px-3 rounded-xl border"
                     type="text"
-                    placeholder="type your message here..."/>
+                    placeholder="Напиши нещо..."/>
 
                 <button class="bg-primary rounded-xl text-white px-2 my-auto py-2">Send</button>
             </div>
@@ -133,5 +91,53 @@
 </div>
 
 @code {
+    Guid UserId;
+    Guid? FriendId;
+    List<GetChatsResponse.ChatModel> Chats;
+    List<GetChatMessagesResponse.ChatMessage> Messages;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authDetails = await AuthService.GetAuthStateDetails();
+        this.UserId = Guid.Parse(authDetails.UserId);
+
+        await GetChats();
+    }
+
+    async Task GetChats()
+    {
+        var chats = await FriendsApiService.GetAllChats();
+
+        if (chats.IsSuccessStatusCode)
+        {
+            Chats = chats.Content.Chats;
+
+            if (FriendId.HasValue is false && Chats.Any())
+            {
+                FriendId = Chats.First().FriendId;
+            }
+
+            return;
+        }
+
+        this.NavigationManager.NavigateTo("/friend-requests");
+        await this.JsRuntime.ToastError("Грешка при зареждане на чатовете!");
+    }
+
+    async Task GetMessages()
+    {
+        if (FriendId.HasValue is false)
+        {
+            this.Messages = [];
+            return;
+        }
+
+        var messages = await FriendsApiService.GetChatMessages(
+            new GetChatMessagesRequest
+            {
+                FriendId = this.FriendId.Value
+            });
+
+        this.Messages = messages.IsSuccessStatusCode ? messages.Content.Messages : [];
+    }
 }

@@ -66,17 +66,24 @@
             <div class="mt-8 flex gap-2 flex-col bg-white rounded-md h-fit p-4 text-white mb-4 w-fit mx-auto px-16">
                 <span class="text-black text-center">Присъствал на събития:</span>
                 
-                <div class="bg-secondary px-4 py-4 rounded-md w-fit flex flex-col gap-4">
-                    
-                    @foreach (var eventModel in Model.AttendedEvents)
-                    {
-                        <div class="flex gap-4">
-                            <span class="mr-auto">@eventModel.Name</span>
-                            <span class="mx-auto">@eventModel.StartDate.Date.ToShortDateString()</span>
-                            <button class="bg-primary rounded-md px-2 cursor-pointer ml-auto" @onclick='() => this.NavigationManager.NavigateTo($"/details/{eventModel.Id}")'>Детайли</button>
-                        </div>
-                    }
-                </div>
+                @if (Model.AttendedEvents.Count != 0)
+                {
+                    <div class="bg-secondary px-4 py-4 rounded-md w-fit flex flex-col gap-4">
+                        @foreach (var eventModel in Model.AttendedEvents)
+                        {
+                            <div class="flex gap-4">
+                                <span class="mr-auto">@eventModel.Name</span>
+                                <span class="mx-auto">@eventModel.StartDate.Date.ToShortDateString()</span>
+                                <button class="bg-primary rounded-md px-2 cursor-pointer ml-auto" @onclick='() => this.NavigationManager.NavigateTo($"/details/{eventModel.Id}")'>Детайли</button>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <span class="mx-auto text-center text-black text-lg">Не е присъствал никъде</span>
+                }
+
             </div>
         }
     </div>

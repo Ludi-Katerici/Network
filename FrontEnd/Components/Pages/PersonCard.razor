@@ -16,7 +16,7 @@
         <div class="flex w-full gap-2">
             <div class="flex rounded-md bg-slate-500 text-white text-sm text-center items-center align-middle px-2">
                 @{
-                    var categoriesText = string.Join(",", Model.Interests.Concat(Model.Interests));
+                    var categoriesText = string.Join(",", Model.Interests.Concat(Model.Searchings));
                     int endLength2 = categoriesText.Length > 38 ? 38 : categoriesText.Length;
                     bool isMoreThan38 = categoriesText.Length > 38;
                     categoriesText = categoriesText.Substring(0, endLength2);

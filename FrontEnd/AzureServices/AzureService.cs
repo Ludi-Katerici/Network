@@ -13,6 +13,7 @@ public class AzureStorage : IAzureStorage
 
     public AzureStorage()
     {
+        
         this.storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=sinkarq2024;AccountKey=9Db8vcY/r7xjahpNVS7qwjUlRa014ePNC/D3hDzMqRJEkspFt2tLi3Mg3+seVJpbqOc1m7RirOEx+ASteyqIFQ==;EndpointSuffix=core.windows.net";
         this.storageContainerName = "hackathon";
     }

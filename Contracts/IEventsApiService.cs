@@ -2,6 +2,7 @@
 using Contracts.Endpoints.GetAllEvents;
 using Contracts.Endpoints.GetCategories;
 using Contracts.Endpoints.GetEventDetails;
+using Contracts.Endpoints.GetPeople;
 using Contracts.Endpoints.SendFriend;
 using Contracts.Endpoints.SignUpForEvent;
 using Refit;
@@ -24,4 +25,7 @@ public interface IEventsApiService
     
     [Get(Endpoints.GetCategories.GetCategories.Route)]
     Task<ApiResponse<GetCategoriesResponse>> GetCategories();
+    
+    [Get(GetPeople.Route)]
+    Task<ApiResponse<GetPeopleResponse>> GetAllPeople();
 }

@@ -1,0 +1,63 @@
+﻿@using Contracts.Endpoints.GetAllEvents
+@using Contracts.Endpoints.GetPeople
+<div class="bg-white border border-gray-200 rounded-lg shadow h-full w-1/6 flex flex-col mx-auto">
+    <a class="h-full w-full flex cursor-pointer">
+        <img @onclick='() => this.NavigationManager.NavigateTo($"/details/{this.Model.Id}")' class="rounded-t-lg object-fit w-full h-full flex border-b-2" src="@Model.ProfilePictureUrl" alt=""/>
+    </a>
+
+    <div class="p-3 flex flex-col gap-2">
+        <span class="mb-2 text-2xl text-primary font-bold tracking-tight">@(this.Model.Name + " " +this.Model.Family)</span>
+
+        @{
+            int endLength = Model.ProfessionalExperience.Length > 80 ? 80 : Model.ProfessionalExperience.Length;
+        }
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">@(Model.ProfessionalExperience.Substring(0, endLength) + "...")</p>
+
+        <div class="flex w-full gap-2">
+            <div class="flex rounded-md bg-slate-500 text-white text-sm text-center items-center align-middle px-2">
+                @{
+                    var categoriesText = string.Join(",", Model.Interests.Concat(Model.Interests));
+                    int endLength2 = categoriesText.Length > 38 ? 38 : categoriesText.Length;
+                    bool isMoreThan38 = categoriesText.Length > 38;
+                    categoriesText = categoriesText.Substring(0, endLength2);
+                    int indexOfLastComma = categoriesText.LastIndexOf(",", StringComparison.Ordinal);
+
+                    if (indexOfLastComma != -1 && isMoreThan38)
+                    {
+                        categoriesText = categoriesText.Substring(0, indexOfLastComma);
+                    }
+                }
+                <span class="my-auto font-semibold">@categoriesText</span>
+            </div>
+        </div>
+
+        
+        <div class="flex w-full">
+            <span class="font-medium text-primary text-sm">Работи: @Model.Work</span>
+        </div>
+
+        
+        <div class="flex w-full gap-2">
+            <a @onclick='() => this.NavigationManager.NavigateTo($"/details/{this.Model.Id}")' class="cursor-pointer inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300">
+                Научи повече
+                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+            <div class="flex bg-primary rounded-md text-white text-sm text-center items-center align-middle px-2">
+                <span class="m-auto mx-auto my-auto font-semibold">@Model.Region</span>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+@code {
+
+    [EditorRequired, Parameter]
+    public GetPeopleResponse.Person Model { get; set; }
+
+    [EditorRequired, Parameter]
+    public NavigationManager NavigationManager { get; set; }
+}

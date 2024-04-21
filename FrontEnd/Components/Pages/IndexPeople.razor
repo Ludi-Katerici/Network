@@ -1,9 +1,8 @@
-﻿@page "/"
-@page "/index"
-@page "/events"
+﻿@page "/people"
 @using Contracts
 @using System.Text.Json
 @using Contracts.Endpoints.GetAllEvents
+@using Contracts.Endpoints.GetPeople
 @using FrontEnd.Infrastructure
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
@@ -26,7 +25,7 @@
                                       if (preferredCategories.Count == 0)
                                           return true;
                                       
-                                      return x.Categories.Any(y => preferredCategories.Contains(y));
+                                      return x.Interests.Any(y => preferredCategories.Contains(y)) || x.Searchings.Any(y => preferredCategories.Contains(y));
                                   })
                                   .Where(x => {
                                         if (preferredRegions.Count == 0)
@@ -35,7 +34,7 @@
                                         return preferredRegions.Contains(x.Region);
                                   }))
                     {
-                        <Card Model="eventModel" NavigationManager="NavigationManager"/>
+                        <PersonCard Model="eventModel" NavigationManager="NavigationManager"/>
                     }
                 </div>
             }
@@ -88,29 +87,27 @@
     private List<SelectableItem<string>> Regions = [];
     
 
-    public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = [[]];
-    public List<List<GetAllEventsResponseModel.EventModel>> RealEvents { get; set; } = [[]];
+    public List<List<GetPeopleResponse.Person>> Events { get; set; } = [[]];
 
     protected override async Task OnInitializedAsync()
     {
-        var events = await EventsApiService.GetAllEvents();
+        var events = await EventsApiService.GetAllPeople();
 
         if (events.IsSuccessStatusCode)
         {
-            foreach (var @event in events.Content.Events)
+            foreach (var @event in events.Content.People)
             {
                 var lastList = Events.Last();
 
                 if (lastList.Count == 5)
                 {
-                    Events.Add(new List<GetAllEventsResponseModel.EventModel>());
+                    Events.Add(new List<GetPeopleResponse.Person>());
                     lastList = Events.Last();
                 }
 
                 lastList.Add(@event);
             }
 
-            RealEvents = Events.ToList();
             var categories = await EventsApiService.GetCategories();
             Categories = categories.Content!.Categories.Select(x => new SelectableItem<string>(x)).ToList();
             Regions = RegionsService.Regions.Select(x => new SelectableItem<string>(x)).ToList();

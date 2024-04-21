@@ -4,9 +4,13 @@
 @using Contracts.Endpoints.GetAllEvents
 @using Contracts.Endpoints.GetPeople
 @using FrontEnd.Infrastructure
+@using FrontEnd.Infrastructure.Authentication
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 @inject IEventsApiService EventsApiService
+@inject IAuthService AuthService
+
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
 <div class="w-full h-full flex flex-col bg-[#B9C1C8] w-ful">
     <div class="flex gap-4 w-full justify-center items-center mt-4">

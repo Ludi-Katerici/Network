@@ -43,7 +43,7 @@
     private async Task<string> ConvertToBase64(IBrowserFile file)
     {
         var memoryStream = new MemoryStream();
-        await file.OpenReadStream().CopyToAsync(memoryStream);
+        await file.OpenReadStream(long.MaxValue).CopyToAsync(memoryStream);
         var bytes = memoryStream.ToArray();
         return Convert.ToBase64String(bytes);
     }

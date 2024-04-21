@@ -11,7 +11,8 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
 
-<!-- This is an example component -->
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
+
 <div class="flex w-full bg-slate-300 h-full mx-auto bg-slate-300 shadow-lg rounded-lg rounded-3xl">
     <!-- end header -->
     <!-- Chatting -->

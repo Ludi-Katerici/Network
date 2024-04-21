@@ -1,8 +1,11 @@
 ﻿@inject NavigationManager NavigationManager
 @inject IFriendsApiService FriendsApiService
+@inject IAuthService AuthService
 
 @page "/friend-requests"
 @using Contracts
+@using FrontEnd.Infrastructure.Authentication
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
 <div class="flex items-center gap-8 justify-center mx-auto">
     <button class="bg-primary p-10 rounded-3xl text-center text-white font-semibold text-2xl" @onclick='() => NavigationManager.NavigateTo("/sent-friend-requests")'>

@@ -2,10 +2,14 @@
 @using Contracts
 @using Contracts.Endpoints.DeleteFriendRequest
 @using Contracts.Endpoints.GetAllFriendRequests
+@using FrontEnd.Infrastructure.Authentication
 @using FrontEnd.Infrastructure.UtilityMethods
 @inject IFriendsApiService FriendsApiService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JsRuntime
+@inject IAuthService AuthService
+
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
 <div class="flex w-full h-full flex-col gap-4 my-auto mx-auto items-center justify-center">
     @if (this.FriendRequests.Count == 0)

@@ -1,5 +1,6 @@
 ﻿using Contracts.Endpoints.CreateEvent;
 using Contracts.Endpoints.GetAllEvents;
+using Contracts.Endpoints.GetCategories;
 using Contracts.Endpoints.GetEventDetails;
 using Contracts.Endpoints.SendFriend;
 using Contracts.Endpoints.SignUpForEvent;
@@ -20,4 +21,7 @@ public interface IEventsApiService
     
     [Post(SignUpForEventRequest.Route)]
     Task<IApiResponse> SignUpForEvent([Body] SignUpForEventRequest request);
+    
+    [Get(Endpoints.GetCategories.GetCategories.Route)]
+    Task<ApiResponse<GetCategoriesResponse>> GetCategories();
 }

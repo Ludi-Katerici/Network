@@ -31,7 +31,7 @@ public class GetPeopleEndpoint : Endpoint<Contracts.Endpoints.GetPeople.GetPeopl
                     Interests = x.Interests,
                     Searchings = x.Searchings,
                     AdditionalInformation = x.AdditionalInformation,
-                    FriendsCount = x.FriendRelationships.Count,
+                    FriendsCount = x.FriendRelationships.Count(),
                     AttendedEvents = x.EventsAttended.Select(y => new Contracts.Endpoints.GetPeople.GetPeopleResponse.AttendedEvent
                     {
                         Id = y.Event.Id,

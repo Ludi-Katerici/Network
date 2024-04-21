@@ -24,4 +24,5 @@ public class Message : ValueObject
     public string ProfilePicture { get; set; }
     public string SenderName { get; set; }
     public string Content { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
 }

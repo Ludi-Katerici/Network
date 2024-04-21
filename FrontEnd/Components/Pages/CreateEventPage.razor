@@ -32,20 +32,18 @@
             <InputText @bind-Value="FormInputModel.Name" class="rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
         </div>
 
-        <div class="flex w-1/4 mx-auto gap-2">
-            <div class="flex flex-col w-1/2 h-full">
-                <label class="font-semibold">
-                    Област: <span class="text-red">*</span>
-                </label>
-                <select @onchange="@OnSelectedRegion" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
-                    @{
-                        foreach (var region in RegionsService.Regions)
-                        {
-                            <option class="bg-white" value="@region">@region</option>
-                        }
+        <div class="flex flex-col w-1/4 mx-auto">
+            <label class="font-semibold">
+                Област: <span class="text-red">*</span>
+            </label>
+            <select @onchange="@OnSelectedRegion" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
+                @{
+                    foreach (var region in RegionsService.Regions)
+                    {
+                        <option class="bg-white" value="@region">@region</option>
                     }
-                </select>
-            </div>
+                }
+            </select>
         </div>
 
         <div class="flex flex-col w-1/4 mx-auto">
@@ -74,7 +72,7 @@
         <button type="button" class="bg-secondary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center" @onclick="@OpenCategoriesModal">
             @{
                 var categoriesCount = Categories.Count(x => x.IsSelected);
-                string text = categoriesCount > 0 ? $"Избрани ({categoriesCount})" : "Избери";
+                string text = categoriesCount > 0 ? $"Избрани ({categoriesCount})" : "Избери Категория";
             }
             <span>@text</span>
         </button>
@@ -147,7 +145,7 @@
             isLoading = false;
             return;
         }
-        
+
         var blobDto = await AzureStorage.UploadAsync(this.profilePicture.Stream, this.profilePicture.Name);
 
         if (blobDto.Error)

@@ -81,20 +81,18 @@
         }
         else if (Step == 2)
         {
-            <div class="flex w-1/4 mx-auto gap-2">
-                <div class="flex flex-col w-1/2 h-full">
-                    <label class="font-semibold">
-                        Област: <span class="text-red">*</span>
-                    </label>
-                    <select @onchange="@OnSelectedRegion" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
-                        @{
-                            foreach (var region in RegionsService.Regions)
-                            {
-                                <option class="bg-white" value="@region">@region</option>
-                            }
+            <div class="flex flex-col w-1/4 mx-auto">
+                <label class="font-semibold">
+                    Област: <span class="text-red">*</span>
+                </label>
+                <select @onchange="@OnSelectedRegion" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
+                    @{
+                        foreach (var region in RegionsService.Regions)
+                        {
+                            <option class="bg-white" value="@region">@region</option>
                         }
-                    </select>
-                </div>
+                    }
+                </select>
             </div>
 
             <div class="flex flex-col w-1/4 mx-auto">
@@ -241,13 +239,13 @@
         var passwordValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.Password)));
         var confirmPasswordValidationMessages = this.FormContext.GetValidationMessages(this.FormContext.Field(nameof(FormInputModel.ConfirmPassword)));
 
-        
+
         if (this.profilePicture is null || (string.IsNullOrWhiteSpace(this.profilePicture.Name) is false && this.profilePicture.Stream.Length > 0) is false)
         {
             await this.JsRuntime.ToastError("Моля качете профилна снимка!");
             return;
         }
-        
+
         if ((!nameValidationMessages.Any() &&
              !familyValidationMessages.Any() &&
              !emailValidationMessages.Any() &&
@@ -290,7 +288,7 @@
             await this.JsRuntime.ToastError("Възникна грешка при качването на профилната снимка!");
             return;
         }
-        
+
         var user = new RegisterUserRequest
         {
             Name = FormInputModel.Name,

@@ -2,6 +2,9 @@
 
 <div class="flex items-center justify-center gap-6">
     <div class="cursor-pointer flex gap-3">
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/create-event")'>
+            <img class="h-6" src="./icons/plus.png" alt="Dots"/>
+        </div>
 
         <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/chat")'>
             <img class="h-6" src="./icons/chat.png" alt="Dots"/>

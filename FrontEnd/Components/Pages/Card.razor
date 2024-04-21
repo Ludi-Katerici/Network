@@ -1,6 +1,6 @@
 ﻿@using Contracts.Endpoints.GetAllEvents
 <div class="bg-white border border-gray-200 rounded-lg shadow h-full w-1/6 flex flex-col mx-auto">
-    <a class="h-full w-full flex" href="#">
+    <a class="h-full w-full flex cursor-pointer">
         <img @onclick='() => this.NavigationManager.NavigateTo($"/details/{this.Model.Id}")' class="rounded-t-lg object-fit w-full h-full flex border-b-2" src="@Model.ImageUrl" alt=""/>
     </a>
 
@@ -16,16 +16,18 @@
             <div class="flex rounded-md bg-slate-500 text-white text-sm text-center items-center align-middle px-2">
                 @{
                     var categoriesText = string.Join(",", Model.Categories);
-                    int endLength2 = categoriesText.Length > 40 ? 40 : categoriesText.Length;
+                    Console.WriteLine(categoriesText);
+                    int endLength2 = categoriesText.Length > 38 ? 38 : categoriesText.Length;
+                    bool isMoreThan38 = categoriesText.Length > 38;
                     categoriesText = categoriesText.Substring(0, endLength2);
                     int indexOfLastComma = categoriesText.LastIndexOf(",", StringComparison.Ordinal);
 
-                    if (indexOfLastComma != -1)
+                    if (indexOfLastComma != -1 && isMoreThan38)
                     {
                         categoriesText = categoriesText.Substring(0, indexOfLastComma);
                     }
                 }
-                <span class="m-auto mx-auto my-auto font-semibold">@categoriesText</span>
+                <span class="my-auto font-semibold">@categoriesText</span>
             </div>
         </div>
 

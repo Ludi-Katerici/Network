@@ -12,7 +12,7 @@ using Server.Persistence;
 namespace Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240421020225_Initial")]
+    [Migration("20240421065423_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -37,10 +37,6 @@ namespace Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Categories")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -134,10 +130,6 @@ namespace Server.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AdditionalInformation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -266,6 +258,9 @@ namespace Server.Migrations
                             b1.Property<string>("ProfilePicture")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
+
+                            b1.Property<Guid>("SenderId")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("SenderName")
                                 .IsRequired()

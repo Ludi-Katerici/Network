@@ -4,15 +4,15 @@
 @using Contracts
 @using System.Text.Json
 @using Contracts.Endpoints.GetAllEvents
+@using FrontEnd.Infrastructure
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
-
 @inject IEventsApiService EventsApiService
 
 <div class="w-full h-full flex flex-col bg-[#B9C1C8] w-ful">
     <div class="flex gap-4 w-full justify-center items-center mt-4">
-        <button class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
-        <button class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
+        <button @onclick="@OpenCategoriesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
+        <button @onclick="@OpenRegions" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
     </div>
 
     <div class="w-full gap-4 h-fit flex mt-6 mb-6">
@@ -20,7 +20,22 @@
             @foreach (var groupEvents in Events)
             {
                 <div class="mx-auto flex w-full h-full gap-4">
-                    @foreach (var eventModel in groupEvents)
+
+                    @foreach (var eventModel in groupEvents
+                                  .Where(x => {
+                                      Console.WriteLine("asd");
+                                      if (preferredCategories.Count == 0)
+                                          return true;
+                                      
+                                      return x.Categories.Any(y => preferredCategories.Contains(y));
+                                  })
+                                  .Where(x => {
+                                        Console.WriteLine("asd1");
+                                        if (preferredRegions.Count == 0)
+                                            return true;
+                                        
+                                        return preferredRegions.Contains(x.Region);
+                                  }))
                     {
                         <Card Model="eventModel" NavigationManager="NavigationManager"/>
                     }
@@ -31,7 +46,51 @@
 </div>
 
 @code {
+
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
+    List<string> preferredCategories = [];
+    List<string> preferredRegions = [];
+
+    private void OpenCategoriesModal() => this.Modal.Show<MultipleListModal>((nameof(MultipleListModal.Items), Categories)).Result.ContinueWith(x => {
+        if (x.Result is
+            {
+                Confirmed: true,
+                Data: not null
+            })
+        {
+            var modal = (List<string>) x.Result.Data;
+
+            preferredCategories = modal.ToList();
+
+            Console.WriteLine(JsonSerializer.Serialize(preferredCategories));
+        }
+        
+        this.StateHasChanged();
+    });
+
+    private void OpenRegions() => this.Modal.Show<MultipleListModal>((nameof(MultipleListModal.Items), Regions)).Result.ContinueWith(x => {
+        if (x.Result is
+            {
+                Confirmed: true,
+                Data: not null
+            })
+        {
+            var modal = (List<string>) x.Result.Data;
+
+            preferredRegions = modal.ToList();
+
+            Console.WriteLine(JsonSerializer.Serialize(preferredRegions));
+        }
+        this.StateHasChanged();
+    });
+
+    private List<SelectableItem<string>> Categories = [];
+    private List<SelectableItem<string>> Regions = [];
+
     public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = [[]];
+    public List<List<GetAllEventsResponseModel.EventModel>> RealEvents { get; set; } = [[]];
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,7 +111,10 @@
                 lastList.Add(@event);
             }
 
-            Console.WriteLine(JsonSerializer.Serialize(Events));
+            RealEvents = Events.ToList();
+            var categories = await EventsApiService.GetCategories();
+            Categories = categories.Content!.Categories.Select(x => new SelectableItem<string>(x)).ToList();
+            Regions = RegionsService.Regions.Select(x => new SelectableItem<string>(x.RegionName)).ToList();
         }
         else
         {

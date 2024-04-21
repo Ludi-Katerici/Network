@@ -88,7 +88,7 @@
         <button type="button" class="bg-secondary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center" @onclick="@OpenCategoriesModal">
             @{
                 var categoriesCount = Categories.Count(x => x.IsSelected);
-                string text = categoriesCount > 0 ? $"Избрани ({categoriesCount})" : "Избери категории";
+                string text = categoriesCount > 0 ? $"Избрани ({categoriesCount})" : "Избери";
             }
             <span>@text</span>
         </button>

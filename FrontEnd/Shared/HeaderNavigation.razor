@@ -1,4 +1,6 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using FrontEnd.Infrastructure.Authentication
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
 
 <div class="flex items-center justify-center gap-6">
     <div class="cursor-pointer flex gap-3">
@@ -22,6 +24,13 @@
             <img class="h-6" src="./icons/friends.png" alt="Dots"/>
         </div>
 
+        @if (isAuthenticated)
+        {
+            <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo($"/details-person/{this.userId}")'>
+                <img class="h-6" src="./icons/user.png" alt="Dots"/>
+            </div>
+        }
+
         <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/Login")'>
             <img class="h-6" src="./icons/logout.png" alt="Dots"/>
         </div>
@@ -29,4 +38,13 @@
 </div>
 
 @code {
+    bool isAuthenticated = false;
+    Guid userId = Guid.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.isAuthenticated = await AuthService.IsAuthenticated();
+        var authDetails = await AuthService.GetAuthStateDetails();
+        this.userId = Guid.Parse(authDetails.UserId);
+    }
 }

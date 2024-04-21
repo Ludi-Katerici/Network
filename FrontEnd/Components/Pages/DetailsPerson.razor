@@ -1,0 +1,110 @@
+﻿@page "/details-person/{id:guid}"
+@using Contracts
+@using Contracts.Endpoints.GetEventDetails
+@using Contracts.Endpoints.GetPeople
+@using Contracts.Endpoints.GetPerson
+@using Contracts.Endpoints.SendFriend
+@using Contracts.Endpoints.SignUpForEvent
+@using FrontEnd.Infrastructure.Authentication
+@using FrontEnd.Infrastructure.UtilityMethods
+@using System.Text.Json
+
+@inject IEventsApiService EventsApiService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+@inject IFriendsApiService FriendsApiService
+
+<AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
+
+<section class="flex w-full h-full bg-[#B9C1C8]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+        @if (this.Model != null)
+        {
+            <div class="grid grid-cols-1 lg:grid-cols-2 flex gap-8">
+                <div class="slider-box w-full h-full max-lg:mx-auto mx-0">
+                    <div class="swiper main-slide-carousel swiper-container relative mb-6 rounded-lg">
+                        <img class="rounded-2xl border border-4 border-primary bg-white" src="@Model.ProfilePictureUrl" alt="Summer Travel Bag image">
+                    </div>
+                </div>
+                <div class="flex flex-col items-center bg-white rounded-lg">
+                    <span class="text-3xl text-white px-10 rounded-lg py-1 mt-4 font-semibold bg-secondary">@(Model.Name + " " + Model.Family)</span>
+
+                    <span class="text-lg text-white px-5 mx-4 rounded-lg mt-4 py-1 font-semibold bg-primary text-center">Интереси: @string.Join(", ", Model.Interests))</span>
+
+                    <span class="text-lg text-white px-5 mx-4 rounded-lg mt-4 py-1 font-semibold bg-primary text-center">Търси/Нуждае се от: @string.Join(", ", Model.Searchings))</span>
+
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Допълнителна информация: @Model.AdditionalInformation
+                    </span>
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Email: @Model.Email
+                    </span>
+
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Образование: @Model.Education
+                    </span>
+
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Професионален опит: @Model.ProfessionalExperience
+                    </span>
+
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Брой Приятели: @Model.FriendsCount
+                    </span>
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Област: @Model.Region
+                    </span>
+
+                    <span class="text-sm text-white px-4 py-2 rounded-lg mt-4 font-semibold bg-primary mx-2">
+                        Работа: @Model.Work
+                    </span>
+
+
+                </div>
+            </div>
+            <div class="mt-8 flex gap-2 flex-col bg-white rounded-md h-fit p-4 text-white mb-4 w-fit mx-auto px-16">
+                <span class="text-black text-center">Присъствал на събития:</span>
+                
+                <div class="bg-secondary px-4 py-4 rounded-md w-fit flex flex-col gap-4">
+                    
+                    @foreach (var eventModel in Model.AttendedEvents)
+                    {
+                        <div class="flex gap-4">
+                            <span class="mr-auto">@eventModel.Name</span>
+                            <span class="mx-auto">@eventModel.StartDate.Date.ToShortDateString()</span>
+                            <button class="bg-primary rounded-md px-2 cursor-pointer ml-auto" @onclick='() => this.NavigationManager.NavigateTo($"/details/{eventModel.Id}")'>Детайли</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    GetPeopleResponse.Person Model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await this.EventsApiService.GetPersonById(new GetPerson()
+        {
+            Id = this.Id
+        });
+
+        if (response.IsSuccessStatusCode is false)
+        {
+            await this.JsRuntime.ToastError("Неуспешно зареждане на данните на профила. Моля опитайте отново.");
+            this.NavigationManager.NavigateTo("/people");
+            return;
+        }
+
+        this.Model = response.Content!.Person;
+
+        Console.WriteLine(JsonSerializer.Serialize(response.Content!.Person));
+    }
+}

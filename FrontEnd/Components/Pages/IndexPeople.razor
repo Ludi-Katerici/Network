@@ -13,34 +13,47 @@
 <AuthorizeComponent AuthService="@AuthService" NavigationManager="NavigationManager"></AuthorizeComponent>
 
 <div class="w-full h-full flex flex-col bg-[#B9C1C8] w-ful">
-    <div class="flex gap-4 w-full justify-center items-center mt-4">
-        <button @onclick="@OpenCategoriesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
-        <button @onclick="@OpenRegions" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
-    </div>
+    
+    @if (this.People[0].Count != 0)
+    {
+        <div class="flex gap-4 w-full justify-center items-center mt-4">
+            <button @onclick="@OpenCategoriesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
+            <button @onclick="@OpenRegions" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
+        </div>
+    }
+    
 
     <div class="w-full gap-4 h-fit flex mt-6 mb-6">
         <div class="flex flex-col w-full h-full gap-4 mx-auto items-center align-middle">
-            @foreach (var groupEvents in Events)
-            {
-                <div class="mx-auto flex w-full h-full gap-4">
 
-                    @foreach (var eventModel in groupEvents
-                                  .Where(x => {
-                                      if (preferredCategories.Count == 0)
-                                          return true;
-                                      
-                                      return x.Interests.Any(y => preferredCategories.Contains(y)) || x.Searchings.Any(y => preferredCategories.Contains(y));
-                                  })
-                                  .Where(x => {
-                                        if (preferredRegions.Count == 0)
-                                            return true;
-                                        
-                                        return preferredRegions.Contains(x.Region);
-                                  }))
-                    {
-                        <PersonCard Model="eventModel" NavigationManager="NavigationManager"/>
-                    }
-                </div>
+            @if (this.People[0].Count == 0)
+            {
+                <span class="text-black font-semibold text-4xl">Няма акаунти...</span>
+            }
+            else
+            {
+                @foreach (var person in People)
+                {
+                    <div class="mx-auto flex w-full h-full gap-4">
+
+                        @foreach (var eventModel in person
+                                      .Where(x => {
+                                          if (preferredCategories.Count == 0)
+                                              return true;
+
+                                          return x.Interests.Any(y => preferredCategories.Contains(y)) || x.Searchings.Any(y => preferredCategories.Contains(y));
+                                      })
+                                      .Where(x => {
+                                          if (preferredRegions.Count == 0)
+                                              return true;
+
+                                          return preferredRegions.Contains(x.Region);
+                                      }))
+                        {
+                            <PersonCard Model="eventModel" NavigationManager="NavigationManager"/>
+                        }
+                    </div>
+                }
             }
         </div>
     </div>
@@ -67,7 +80,7 @@
 
             Console.WriteLine(JsonSerializer.Serialize(preferredCategories));
         }
-        
+
         this.StateHasChanged();
     });
 
@@ -89,9 +102,9 @@
 
     private List<SelectableItem<string>> Categories = [];
     private List<SelectableItem<string>> Regions = [];
-    
 
-    public List<List<GetPeopleResponse.Person>> Events { get; set; } = [[]];
+
+    public List<List<GetPeopleResponse.Person>> People { get; set; } = [[]];
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,12 +114,12 @@
         {
             foreach (var @event in events.Content.People)
             {
-                var lastList = Events.Last();
+                var lastList = People.Last();
 
                 if (lastList.Count == 5)
                 {
-                    Events.Add(new List<GetPeopleResponse.Person>());
-                    lastList = Events.Last();
+                    People.Add(new List<GetPeopleResponse.Person>());
+                    lastList = People.Last();
                 }
 
                 lastList.Add(@event);

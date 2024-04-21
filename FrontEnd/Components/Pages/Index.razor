@@ -10,36 +10,47 @@
 @inject IEventsApiService EventsApiService
 
 <div class="w-full h-full flex flex-col bg-[#B9C1C8] w-ful">
-    <div class="flex gap-4 w-full justify-center items-center mt-4">
-        <button @onclick="@OpenCategoriesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
-        <button @onclick="@OpenRegions" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
-        <button @onclick="@OpenSelectDatesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери Дати</button>
-    </div>
+    @if (this.Events[0].Count != 0)
+    {
+        <div class="flex gap-4 w-full justify-center items-center mt-4">
+            <button @onclick="@OpenCategoriesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери категории</button>
+            <button @onclick="@OpenRegions" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери област</button>
+            <button @onclick="@OpenSelectDatesModal" class="bg-primary font-semibold rounded-2xl px-2 py-1 text-white ">Избери Дати</button>
+        </div>
+    }
 
     <div class="w-full gap-4 h-fit flex mt-6 mb-6">
         <div class="flex flex-col w-full h-full gap-4 mx-auto items-center align-middle">
-            @foreach (var groupEvents in Events)
-            {
-                <div class="mx-auto flex w-full h-full gap-4">
 
-                    @foreach (var eventModel in groupEvents
-                                  .Where(x => {
-                                      if (preferredCategories.Count == 0)
-                                          return true;
-                                      
-                                      return x.Categories.Any(y => preferredCategories.Contains(y));
-                                  })
-                                  .Where(x => {
-                                        if (preferredRegions.Count == 0)
-                                            return true;
-                                        
-                                        return preferredRegions.Contains(x.Region);
-                                  })
-                                  .Where(x => x.StartDate.Date >= selectedDates.StartDate.Date && x.StartDate.Date <= selectedDates.EndDate.Date))
-                    {
-                        <Card Model="eventModel" NavigationManager="NavigationManager"/>
-                    }
-                </div>
+            @if (this.Events[0].Count == 0)
+            {
+                <span class="text-black font-semibold text-4xl">Няма събития...</span>
+            }
+            else
+            {
+                @foreach (var groupEvents in Events)
+                {
+                    <div class="mx-auto flex w-full h-full gap-4">
+
+                        @foreach (var eventModel in groupEvents
+                                      .Where(x => {
+                                          if (preferredCategories.Count == 0)
+                                              return true;
+
+                                          return x.Categories.Any(y => preferredCategories.Contains(y));
+                                      })
+                                      .Where(x => {
+                                          if (preferredRegions.Count == 0)
+                                              return true;
+
+                                          return preferredRegions.Contains(x.Region);
+                                      })
+                                      .Where(x => x.StartDate.Date >= selectedDates.StartDate.Date && x.StartDate.Date <= selectedDates.EndDate.Date))
+                        {
+                            <Card Model="eventModel" NavigationManager="NavigationManager"/>
+                        }
+                    </div>
+                }
             }
         </div>
     </div>
@@ -53,15 +64,16 @@
     List<string> preferredCategories = [];
     List<string> preferredRegions = [];
 
-    SelectDateTimeModal.Dates selectedDates = new() {
+    SelectDateTimeModal.Dates selectedDates = new()
+    {
         StartDate = DateTime.Now,
         EndDate = DateTime.Now
     };
-    
+
     private void OpenSelectDatesModal() => this.Modal.Show<SelectDateTimeModal>(
         (nameof(SelectDateTimeModal.StartDate), MinDate),
         (nameof(SelectDateTimeModal.EndDate), MaxDate)
-        ).Result.ContinueWith(x => {
+    ).Result.ContinueWith(x => {
         if (x.Result is
             {
                 Confirmed: true,
@@ -69,10 +81,10 @@
             })
         {
             var modal = (SelectDateTimeModal.Dates) x.Result.Data;
-            
+
             selectedDates = modal;
         }
-        
+
         this.StateHasChanged();
     });
 
@@ -89,7 +101,7 @@
 
             Console.WriteLine(JsonSerializer.Serialize(preferredCategories));
         }
-        
+
         this.StateHasChanged();
     });
 
@@ -111,10 +123,10 @@
 
     private List<SelectableItem<string>> Categories = [];
     private List<SelectableItem<string>> Regions = [];
-    
+
     public DateTime MinDate { get; set; } = DateTime.Now;
     public DateTime MaxDate { get; set; } = DateTime.Now;
-    
+
 
     public List<List<GetAllEventsResponseModel.EventModel>> Events { get; set; } = [[]];
     public List<List<GetAllEventsResponseModel.EventModel>> RealEvents { get; set; } = [[]];
@@ -137,9 +149,9 @@
 
                 lastList.Add(@event);
             }
-            
+
             var flatted = Events.SelectMany(x => x).ToList();
-            
+
             if (flatted.Count != 0)
             {
                 MinDate = flatted.Min(x => x.StartDate);

@@ -1,6 +1,6 @@
 ﻿@page "/Login"
 @using Contracts
-@using Contracts.Endpoints.LoginUser    
+@using Contracts.Endpoints.LoginUser
 @using FrontEnd.Infrastructure.Authentication
 @using FrontEnd.Infrastructure.UtilityMethods
 
@@ -31,9 +31,13 @@
             <InputText @bind-Value="FormInputModel.Password" type="password" class="rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none"/>
         </div>
 
-        <button type="submit" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 pb-2 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
+        <button type="submit" class="bg-primary w-1/4 mx-auto rounded-lg text-white p-1 text-xl mt-8 text-center align-middle items-center hover:bg-[#348aa7] transition-all">
             <span>@(isLoading ? "Изчакайте..." : "Влез")</span>
         </button>
+
+        <div class="mx-auto">
+            <button class="text-dark mx-auto text-center align-middle items-center pb-2 underline" @onclick='() => this.NavigationManager.NavigateTo("/Register")'>Нямаш акаунт? Влез.</button>
+        </div>
     </EditForm>
 </div>
 
@@ -59,9 +63,9 @@
                 Email = FormInputModel.Email,
                 Password = FormInputModel.Password
             });
-        
+
         isLoading = false;
-        
+
         if (result is
             {
                 IsSuccessStatusCode: true,
@@ -77,7 +81,7 @@
             await JsRuntime.ToastError("Грешен email или парола!");
         }
     }
-    
+
     private async Task SetAuthDetails(LoginUserResponse loginResponse)
     {
         if (loginResponse.UserId == default)

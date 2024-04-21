@@ -3,17 +3,9 @@
 <header class="flex justify-between bg-[#3AB4C1] py-3 px-3 border-b-2 border-b-solid border-b-[#d2d2d2] relative">
     <div class="flex my-auto gap-8">
         <img class="my-auto cursor-pointer" src="./icons/logo.jpg" alt="Main Logo" @onclick='() => NavigationManager.NavigateTo("/")'/>
-
-        <div class="justify-center bg-primary rounded-full items-center p-4 flex cursor-pointer h-fit my-auto" @onclick='() => NavigationManager.NavigateTo("/")'>
-            <img class="h-6" src="./icons/home.png" alt="Dots"/>
-        </div>
     </div>
-    <HeaderNavigation ToggleDropdown="ToggleDropdown"></HeaderNavigation>
+    <HeaderNavigation></HeaderNavigation>
 </header>
 
 @code {
-
-    [Parameter, EditorRequired]
-    public EventCallback ToggleDropdown { get; set; }
-
 }

@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<Header ToggleDropdown="ToggleDropdown"></Header>
+<Header></Header>
 
 <main class="w-full h-fit flex flex-1 relative">
     <SideBar></SideBar>
@@ -14,13 +14,8 @@
             </ErrorContent>
         </ErrorBoundary>
     </div>
-
-    <DropdownList DropdownVisibilityClass="@DropdownVisibilityClass"></DropdownList>
 </main>
 <Footer></Footer>
 
 @code {
-    string DropdownVisibilityClass { get; set; } = "hidden";
-
-    void ToggleDropdown() => DropdownVisibilityClass = DropdownVisibilityClass == "hidden" ? "block" : "hidden";
 }

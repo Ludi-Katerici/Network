@@ -2,6 +2,14 @@
 
 <div class="flex items-center justify-center gap-6">
     <div class="cursor-pointer flex gap-3">
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/")'>
+            <img class="h-6" src="./icons/home.png" alt="Dots"/>
+        </div>
+
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/create-event")'>
+            <img class="h-6" src="./icons/globe.png" alt="Dots"/>
+        </div>
+
         <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/create-event")'>
             <img class="h-6" src="./icons/plus.png" alt="Dots"/>
         </div>
@@ -14,15 +22,11 @@
             <img class="h-6" src="./icons/friends.png" alt="Dots"/>
         </div>
 
-        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick="ToggleDropdown">
-            <img class="h-6" src="./icons/menuIcon.png" alt="Dots"/>
+        <div class="justify-center bg-primary rounded-full items-center p-4" @onclick='() => NavigationManager.NavigateTo("/Login")'>
+            <img class="h-6" src="./icons/logout.png" alt="Dots"/>
         </div>
     </div>
 </div>
 
 @code {
-
-    [EditorRequired, Parameter]
-    public EventCallback ToggleDropdown { get; set; }
-
 }

@@ -123,6 +123,7 @@
     List<GetChatsResponse.ChatModel> Chats = [];
     List<GetChatMessagesResponse.ChatMessage> Messages = [];
     string MessageText;
+    Timer timer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -131,10 +132,18 @@
         Console.WriteLine(this.UserId);
 
         await RefreshData();
+
+        timer = new Timer(async _ => {
+            await RefreshData();
+
+            // Ensure UI update
+            StateHasChanged();
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));// 
     }
 
     async Task RefreshData()
     {
+        Console.WriteLine("Refreshing data...");
         await GetChats();
         await GetMessages();
     }
@@ -208,5 +217,10 @@
         {
             await this.JsRuntime.ToastError("Грешка при изпращане на съобщението!");
         }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
     }
 }

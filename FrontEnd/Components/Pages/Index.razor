@@ -155,7 +155,7 @@
             RealEvents = Events.ToList();
             var categories = await EventsApiService.GetCategories();
             Categories = categories.Content!.Categories.Select(x => new SelectableItem<string>(x)).ToList();
-            Regions = RegionsService.Regions.Select(x => new SelectableItem<string>(x.RegionName)).ToList();
+            Regions = RegionsService.Regions.Select(x => new SelectableItem<string>(x)).ToList();
         }
         else
         {

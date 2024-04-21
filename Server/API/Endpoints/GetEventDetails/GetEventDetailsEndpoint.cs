@@ -26,7 +26,6 @@ public class GetEventDetailsEndpoint : Endpoint<GetEventDetailsRequest, GetEvent
                 Categories = x.Categories,
                 Description = x.Description,
                 Region = x.Region,
-                City = x.City,
                 Address = x.Address,
                 StartDate = x.StartDate,
                 Attendees = x.Attendees.Select(attendee => new GetEventDetailsResponse.Attendee

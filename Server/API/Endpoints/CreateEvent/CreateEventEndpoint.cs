@@ -31,7 +31,6 @@ public class CreateEventEndpoint : Endpoint<CreateEventRequest>
             profilePicture: req.PictureUrl,
             title: req.Name,
             region: req.Region,
-            city: req.City,
             address: req.Address,
             categories: req.Categories,
             description: req.Description,

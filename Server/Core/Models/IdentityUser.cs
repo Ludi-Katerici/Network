@@ -13,7 +13,6 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
         string email,
         string phoneNumber,
         string region,
-        string city,
         string education,
         string work,
         string professionalExperience,
@@ -30,7 +29,6 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
         this.PhoneNumber = phoneNumber;
         this.AuthorizationDetails = new AuthorizationDetails();
         this.Region = region;
-        this.City = city;
         this.ProfessionalExperience = professionalExperience;
         this.Interests = interests;
         this.Searchings = searchings;
@@ -46,7 +44,6 @@ public sealed class IdentityUser : Entity<Guid>, IAuditInformation
     public string PasswordHash { get; set; }
 
     public string Region { get; set; }
-    public string City { get; set; }
     
     public string Education { get; set; }
     public string Work { get; set; }

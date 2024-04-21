@@ -14,10 +14,6 @@ public class CreateEventFormInputValidator : AbstractValidator<CreateEventFormIn
             .NotEmpty()
             .WithMessage("Моля въведете регион");
         
-        this.RuleFor(x => x.City)
-            .NotEmpty()
-            .WithMessage("Моля въведете град");
-        
         this.RuleFor(x => x.Address)
             .NotEmpty()
             .WithMessage("Моля въведете адрес");

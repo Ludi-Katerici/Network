@@ -13,7 +13,6 @@ internal sealed class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.Property(x => x.Title).IsRequired();
         builder.Property(x => x.Region).IsRequired();
-        builder.Property(x => x.City).IsRequired();
         builder.Property(x => x.Address).IsRequired();
         builder.Property(x => x.Categories).IsRequired();
         builder.Property(x => x.Description).IsRequired();

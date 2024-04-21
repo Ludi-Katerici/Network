@@ -10,7 +10,6 @@ public class GetAllEventsResponseModel
         public required string ImageUrl { get; set; }
         public required string Title { get; set; }
         public required string Region { get; set; }
-        public required string City { get; set; }
         public required List<string> Categories { get; set; }
         public required string Description { get; set; }
         public required string CreatorFullName { get; set; }

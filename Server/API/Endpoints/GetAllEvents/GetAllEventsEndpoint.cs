@@ -23,7 +23,6 @@ public class GetAllEventsEndpoint : Endpoint<GetAllEventsRequest, GetAllEventsRe
             ImageUrl = x.ProfilePicture,
             Title = x.Title,
             Region = x.Region,
-            City = x.City,
             Categories = x.Categories,
             Description = x.Description,
             CreatorFullName = $"{x.Creator.Name} {x.Creator.Family}",

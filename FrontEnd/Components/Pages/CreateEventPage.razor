@@ -41,21 +41,7 @@
                     @{
                         foreach (var region in RegionsService.Regions)
                         {
-                            <option class="bg-white" value="@region.RegionName">@region.RegionName</option>
-                        }
-                    }
-                </select>
-            </div>
-
-            <div class="flex flex-col w-1/2 h-full">
-                <label class="font-semibold">
-                    Град: <span class="text-red">*</span>
-                </label>
-                <select @onchange="@OnSelectedCity" class="bg-white rounded-md px-3 py-1 text-t-color border border-slate-300 focus:border-blue-500 focus:border focus:outline-none">
-                    @{
-                        foreach (var city in RegionsService.Regions.FirstOrDefault(x => x.RegionName == Region)!.Cities)
-                        {
-                            <option class="bg-white" value="@city">@city</option>
+                            <option class="bg-white" value="@region">@region</option>
                         }
                     }
                 </select>
@@ -137,7 +123,6 @@
     {
         FormContext = new EditContext(FormInputModel);
         ValidationMessageStore = new ValidationMessageStore(FormContext);
-        City = "София";
         Region = "София";
         var categories = await EventsService.GetCategories();
         Categories = categories.Content!.Categories.Select(x => new SelectableItem<string>(x)).ToList();
@@ -146,7 +131,6 @@
     async Task OnSubmit()
     {
         isLoading = true;
-        this.FormInputModel.City = City;
         this.FormInputModel.Region = Region;
         this.FormInputModel.Categories = Categories.Where(x => x.IsSelected).Select(x => x.Value).ToList();
 
@@ -179,7 +163,6 @@
                 Description = this.FormInputModel.Description,
                 StartDate = this.FormInputModel.StartTime,
                 Region = this.FormInputModel.Region,
-                City = this.FormInputModel.City,
                 Address = this.FormInputModel.Address,
                 Categories = this.FormInputModel.Categories,
                 PictureUrl = blobDto.Blob.Uri!,
@@ -202,20 +185,16 @@
 
     void OnSelectedRegion(ChangeEventArgs e) => this.Region = e.Value.ToString();
 
-    void OnSelectedCity(ChangeEventArgs e) => this.City = e.Value.ToString();
-
     static ReadOnlyDictionary<string, string> requestMap = new Dictionary<string, string>()
     {
         { nameof(FormInputModel.Name), nameof(CreateEventRequest.Name) },
         { nameof(FormInputModel.Description), nameof(CreateEventRequest.Description) },
         { nameof(FormInputModel.StartTime), nameof(CreateEventRequest.StartDate) },
         { nameof(FormInputModel.Region), nameof(CreateEventRequest.Region) },
-        { nameof(FormInputModel.City), nameof(CreateEventRequest.City) },
         { nameof(FormInputModel.Address), nameof(CreateEventRequest.Address) },
         { nameof(FormInputModel.Categories), nameof(CreateEventRequest.Categories) }
     }.AsReadOnly();
 
     private bool isLoading;
-    string City;
     string Region;
 }

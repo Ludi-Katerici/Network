@@ -16,7 +16,6 @@ public sealed class IdentityUserConfiguration : IEntityTypeConfiguration<Identit
         builder.Property(x => x.PhoneNumber).IsRequired();
         builder.Property(x => x.PasswordHash).IsRequired();
         builder.Property(x => x.Region).IsRequired();
-        builder.Property(x => x.City).IsRequired();
         builder.Property(x => x.ProfessionalExperience).IsRequired();
         builder.Property(x => x.Interests).IsRequired();
         builder.Property(x => x.Searchings).IsRequired();

@@ -11,7 +11,6 @@ public sealed record RegisterUserRequest
     public string PhoneNumber { get; set; }
     public string Password { get; set; }
     public string Region { get; set; }
-    public string City { get; set; }
     public string Education { get; set; }
     public string Work { get; set; }
     public string ProfessionalExperience { get; set; }

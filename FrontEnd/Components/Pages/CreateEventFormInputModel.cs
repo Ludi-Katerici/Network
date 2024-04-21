@@ -8,8 +8,6 @@ public sealed class CreateEventFormInputModel
     
     public string Region { get; set; }
     
-    public string City { get; set; }
-    
     public string Address { get; set; }
     
     public List<string> Categories { get; set; }
